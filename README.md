@@ -22,7 +22,7 @@
 
 ## Concept 
 
-concept art of the PHNTM idea (prompts in [`brand/IDEA_BRIEF.md`](brand/IDEA_BRIEF.md),
+concept art of the PHNTM idea ,
 originals in `brand/*-ai.png`):
 
 <p align="center">
@@ -101,4 +101,4 @@ follow for more
 
 ## License
 
-MIT. Sell it, fork it, build on it — keep the crediting line.
+MIT.  fork it, build on it — keep the crediting line.
