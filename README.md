@@ -1,5 +1,9 @@
 # 👻 PHNTM
 
+<p align="center">
+  <img src="brand/phntm-logo.svg" alt="PHNTM — Ghost USB logo" width="320"/>
+</p>
+
 ![CI](https://github.com/merouanebenboucherit-cmd/phntm/actions/workflows/ci.yml/badge.svg)
 ![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Python](https://img.shields.io/badge/python-3.11%2B-blue)
@@ -15,6 +19,21 @@
    + GENERAL mix                     └─ 64 GB  PHANTOM  (full arsenal)
                                        (+128 GB BANSHEE for GENERAL)
 ```
+
+## Concept art
+
+AI-generated concept art of the PHNTM idea (prompts in [`brand/IDEA_BRIEF.md`](brand/IDEA_BRIEF.md),
+originals in `brand/*-ai.png`):
+
+<p align="center">
+  <img src="brand/phntm-hero-ai-web.png" alt="PHNTM hero concept — personas into tiers into a legendary stick" width="820"/>
+</p>
+
+<p align="center">
+  <img src="brand/phntm-logo-ai-web.png" alt="PHNTM Ghost USB logo concept" width="320"/>
+</p>
+
+---
 
 ## Why PHNTM
 
