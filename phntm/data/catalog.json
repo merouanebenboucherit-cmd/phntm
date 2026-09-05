@@ -17,8 +17,9 @@
       "size_gb": 4.3,
       "url": "https://www.kali.org/get-kali/#kali-bare-metal",
       "homepage": "https://www.kali.org",
-      "notes": "Use with persistence.enabled for a persistent lab.",
-      "release": "2026.3"
+      "notes": "Direct live ISO from the official Kali CD image mirror (kali-2024.4, amd64). Use with persistence.enabled for a persistent lab.",
+      "release": "2026.3",
+      "download_url": "https://cdimage.kali.org/kali-2024.4/kali-linux-2024.4-live-amd64.iso"
     },
     {
       "id": "blackarch-live",
@@ -120,7 +121,9 @@
       "size_gb": 3.5,
       "url": "https://www.hirensbootcd.org/files/HBCD_PE_x64.iso",
       "homepage": "https://www.hirensbootcd.org",
-      "release": "2023-05-03"
+      "release": "2023-05-03",
+      "download_url": "https://www.hirensbootcd.org/files/HBCD_PE_x64.iso",
+      "notes": "Direct PE ISO download."
     },
     {
       "id": "systemrescue",
@@ -137,7 +140,9 @@
       "size_gb": 1.1,
       "url": "https://www.system-rescue.org/Download/",
       "homepage": "https://www.system-rescue.org",
-      "release": "12.00"
+      "release": "12.00",
+      "download_url": "https://download.system-rescue.org/linux/11.03/systemrescue-11.03-amd64.iso",
+      "notes": "Direct ISO from official SystemRescue CDN (11.03 amd64)."
     },
     {
       "id": "gparted-live",
@@ -154,7 +159,9 @@
       "size_gb": 0.6,
       "url": "https://gparted.org/download.php",
       "homepage": "https://gparted.org",
-      "release": "1.6.0-4"
+      "release": "1.6.0-4",
+      "download_url": "https://downloads.sourceforge.net/gparted/gparted-live-1.6.0-3-amd64.iso",
+      "notes": "Direct ISO via SourceForge (1.6.0-3 amd64)."
     },
     {
       "id": "clonezilla-live",
@@ -172,7 +179,9 @@
       "size_gb": 0.5,
       "url": "https://clonezilla.org/downloads.php",
       "homepage": "https://clonezilla.org",
-      "release": "3.2.1-6"
+      "release": "3.2.1-6",
+      "download_url": "https://downloads.sourceforge.net/clonezilla-live/clonezilla-live-3.1.2-10-amd64.iso",
+      "notes": "Direct ISO via SourceForge (3.1.2-10 amd64)."
     },
     {
       "id": "resquezilla",

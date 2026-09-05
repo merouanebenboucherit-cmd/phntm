@@ -139,6 +139,7 @@ def cmd_doctor() -> None:
     import platform
     import shutil
 
+    from .engine.fetch import cache_status
     from .engine.ventoy import VentoyTool
 
     rprint("[bold]PHNTM doctor[/]")
@@ -148,6 +149,8 @@ def cmd_doctor() -> None:
         ("catalog", catalog_version(), True),
         ("venv", "active ✅" if sys.prefix != sys.base_prefix else "⚠️ system python", sys.prefix != sys.base_prefix),
     ]
+    cl = cache_status()
+    checks.append(("cache", f"{cl['count']} component(s), {cl['total_gb']:.2f} GB", True))
     tool = VentoyTool.detect()
     checks.append(("ventoy", tool.message, tool.mode != "none"))
     docker = shutil.which("docker")
@@ -348,6 +351,19 @@ def cmd_build(
         needed = compute_budget(manifest, catalog).used_gb
         sticks = scan_devices()
         rprint(dry_run(manifest, catalog))
+        # Offline-first: tell the user what the manifest still needs fetched.
+        from .engine.fetch import list_cache
+
+        have = list_cache()
+        missing = sorted(
+            catalog[c].id for c in manifest.components
+            if catalog[c].kind == "iso" and c not in have
+        )
+        if missing:
+            rprint(f"[yellow]not yet cached:[/] {', '.join(missing)} — snag them with "
+                   f"[bold]phntm fetch {' '.join(missing)}[/]")
+        elif any(catalog[c].kind == "iso" for c in manifest.components):
+            rprint("[green]ISO components all cached — this build can run fully offline.[/]")
         if sticks:
             fits_one = next((s for s in sticks if s.fits(needed)), None)
             if fits_one:
@@ -408,11 +424,90 @@ def cmd_update(
 ) -> None:
     """Refresh the component catalog (v1: informational)."""
     current = load_catalog()
-    rprint(f"[bold]catalog[/] {catalog_version()} — {len(current)} components")
+    with_dl = sum(1 for e in current.values() if e.download_url)
+    rprint(f"[bold]catalog[/] {catalog_version()} — {len(current)} components ({with_dl} with direct download links)")
     if dry:
         rprint("[yellow]This build ships the bundled catalog. Network refresh arrives in a later release.[/]")
+        rprint("[green]Fetch ISOs into the offline cache now:[/] [bold]phntm fetch --all[/]  (or [bold]phntm fetch <id>…[/])")
     else:
         rprint("[yellow]automatic catalog pull is not wired yet; keep this build fully local by design.[/]")
+
+
+# --------------------------------------------------------------------------- fetch
+@app.command("fetch")
+def cmd_fetch(
+    components: List[str] = typer.Argument(None, help="component ids to fetch (e.g. kali-linux)"),
+    all_: bool = typer.Option(False, "--all", help="fetch every component that has a direct download link"),
+    manifest: str = typer.Option("", "--manifest", "-m", help="fetch exactly the components in a manifest"),
+    verify: bool = typer.Option(False, "--verify", help="verify already-cached files instead of downloading"),
+    cache: str = typer.Option("", "--cache", help="cache dir (default ~/.cache/phntm)"),
+) -> None:
+    """Download component files (ISOs) into the local offline cache."""
+    from .engine.fetch import FetchError, fetch_all, filename_for
+
+    catalog = load_catalog()
+    ids: list[str] = []
+    if manifest:
+        ids = read_manifest(manifest).components
+    elif all_:
+        ids = sorted(c.id for c in catalog.values() if c.download_url)
+    elif components:
+        ids = components
+    else:
+        rprint("[red]give component ids, or use --all / --manifest <file>[/]")
+        raise typer.Exit(1)
+
+    unknown = [i for i in ids if i not in catalog]
+    if unknown:
+        rprint(f"[red]unknown component(s): {', '.join(unknown)}[/]")
+        raise typer.Exit(1)
+
+    if verify:
+        rprint(f"[bold]phntm fetch --verify[/] — checking {len(ids)} cached file(s)…")
+    else:
+        rprint(f"[bold]phntm fetch[/] — {len(ids)} component(s) → {cache or '~/.cache/phntm'}")
+    entries = [catalog[i] for i in ids]
+
+    def _progress_line(entry, done: int, total: int | None) -> None:
+        if not sys.stdout.isatty():
+            return
+        pct = f"{done/1024/1024:.0f}/{total/1024/1024:.0f} MiB" if total else f"{done/1024/1024:.0f} MiB"
+        print(f"\r  {entry.id:<20} {pct:<28}", end="", flush=True)
+
+    ok = []
+    try:
+        results = fetch_all(entries, cache=cache or None, verify_only=verify, progress=_progress_line)
+    except FetchError as exc:
+        if sys.stdout.isatty():
+            print()
+        rprint(f"[red]✘ {exc}[/]")
+        raise typer.Exit(1)
+    if sys.stdout.isatty():
+        print()
+    for r in results:
+        flag = "cached ✔" if not r.fresh else ("verified ✔" if verify else "downloaded ✔")
+        checksum = f"sha256 ok" if r.checksum_ok else ("sha256 n/a" if r.checksum_ok is None else "sha256 MISMATCH")
+        rprint(f"  [green]{r.entry.id:<20}[/] {flag:<12} {filename_for(r.entry)}  ({r.size/1024/1024:.0f} MiB, {checksum})")
+        ok.append(r)
+    total_mib = sum(r.size for r in ok) / 1024 / 1024
+    rprint(f"[bold]done[/] {len(ok)} file(s), {total_mib:.0f} MiB in cache. Build stays offline — stick to [bold]phntm build[/].")
+
+
+# --------------------------------------------------------------------------- cache
+@app.command("cache")
+def cmd_cache(cache: str = typer.Option("", "--cache", help="cache dir (default ~/.cache/phntm)")) -> None:
+    """Show what's in the offline cache."""
+    from .engine.fetch import cache_status
+
+    st = cache_status(cache or None)
+    n, total_gb = st["count"], st["total_gb"]
+    rprint(f"[bold]phntm cache[/] — {n} component{'s' if n != 1 else ''}: {total_gb:.2f} GB"
+           f"{'' if cache else '  (~/.cache/phntm)'}")
+    if not n:
+        rprint("[yellow]cache is empty — [bold]phntm fetch --all[/] fills it[/]")
+        return
+    for cid, p in sorted(st["files"].items()):
+        rprint(f"  [green]{cid:<20}[/] {p}")
 
 
 # --------------------------------------------------------------------------- test

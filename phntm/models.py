@@ -77,6 +77,7 @@ class CatalogEntry(BaseModel):
     persona_tags: List[Persona] = Field(default_factory=list)
     size_gb: float = Field(gt=0)
     url: str
+    download_url: Optional[str] = None
     homepage: Optional[str] = None
     sha256: Optional[str] = None
     release: Optional[str] = None
@@ -84,9 +85,11 @@ class CatalogEntry(BaseModel):
     redistributable: bool = True
     notes: Optional[str] = None
 
-    @field_validator("url")
+    @field_validator("url", "download_url")
     @classmethod
-    def _url_must_be_http(cls, v: str) -> str:
+    def _url_must_be_http(cls, v: Optional[str]) -> Optional[str]:
+        if v is None:
+            return v
         if not v.startswith(("http://", "https://")):
             raise ValueError(f"url must be http(s): {v}")
         return v

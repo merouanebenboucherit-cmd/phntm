@@ -4,6 +4,20 @@ All notable changes to PHNTM are tracked here. Format follows
 [Keep a Changelog](https://keepachangelog.com/); versioning follows
 [SemVer](https://semver.org/).
 
+## [1.3.0] — offline arsenal 👻📦
+**Offline anything — you can finally get real ISOs onto a stick.** PHNTM now downloads
+component files into a local offline cache; builds stay fully offline by design.
+
+### Added
+- `phntm fetch <id>… | --all | --manifest <file>` — download components into `~/.cache/phntm`
+  - **resume**: an interrupted download keeps a `.part` and continues via HTTP `Range`
+  - **verify**: checks sha256 whenever the catalog knows one (mismatch → file rejected, nothing half-written stays behind)
+  - `--verify` mode re-checks cached files without touching the network
+- `phntm cache` — what's cached, per-component paths, total size
+- `phntm doctor` now reports cache status; `phntm build --dry-run` prints exactly which manifest ISOs aren't cached yet
+- catalog: 5 ISOs with direct download links on record (kali-linux, hirens-boot-pe, systemrescue, gparted-live, clonezilla-live); the rest stay landing pages you grab by hand
+- 13 fetch tests (local HTTP server with Range): happy path, resume, restart-when-Range-ignored, checksum reject, 404, empty, page-only refusal, verify-only, cache listing — **70 total**
+
 ## [1.2.0] — tune the plan 👻🔧
 **M2 hardened — a real tuning cockpit.** The wizard is now 4 screens.
 

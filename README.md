@@ -83,11 +83,13 @@ phntm tui                                            # ✨ the wizard: persona �
 phntm devices                                        # detect stick: size + USB 2.0/3.0 + model
 phntm presets                                        # browse personas × tiers
 phntm doctor                                         # is this machine build-ready?
+phntm fetch --all                                    # 🛰 grab ISOs into ~/.cache/phntm (resumable, sha256-verified)
 
-phntm build build.json --dry-run                     # full plan, zero side effects
+phntm build build.json --dry-run                     # full plan, zero side effects (shows what's not cached yet)
 phntm build build.json -d auto -y                    # real build, auto-picks the single stick
 phntm status /media/USB                              # what's on the stick
 phntm check build.json                               # fresh vs catalog? (stick or manifest)
+phntm cache                                          # what's sitting in the offline cache
 phntm update                                         # catalog status
 ```
 
@@ -107,6 +109,8 @@ phntm update                                         # catalog status
 | `phntm check <manifest-or-stick>` | freshness diff vs catalog |
 | `phntm update` | catalog status |
 | `phntm doctor` | is this machine ready to build sticks? |
+| `phntm fetch <id>… / --all / -m f.json` | download ISOs into `~/.cache/phntm` — resumable, sha256-checked when the catalog knows a hash |
+| `phntm cache` | what's cached, and how much space it takes |
 
 ## Anatomy of a built stick
 
@@ -122,10 +126,11 @@ VENTOY          bootloader  (any FAT/EXFAT/NTFS/x86 ISO boots)
 
 ## Status
 
-`1.2.0`
+`1.3.0`
 
-- **Core ✅** manifest engine, catalog (26 components), 16 presets, budget engine, device detection, CLI
-- **Wizard ✅** Textual TUI — persona → tier → tune components + live size meter (57 tests)
+- **Core ✅** manifest engine, catalog (25 components), 16 presets, budget engine, device detection, CLI
+- **Wizard ✅** Textual TUI — persona → tier → tune components + live size meter
+- **Fetch ✅** `phntm fetch` — real ISOs into an offline cache, resumable + sha256-verified (70 tests)
 
 follow for more
 
