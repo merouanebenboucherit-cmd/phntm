@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="730">
+<rect width="100%" height="100%" fill="#0d1117"/>
+<rect x="8" y="18" width="1164" height="34" fill="#161b22" rx="7"/>
+<text x="24" y="41" font-family="DejaVu Sans,monospace" font-size="16" font-weight="bold" fill="#58a6ff">phntm components — browse the 25-component catalog  ·  exit 0</text>
+<text x="18" y="52" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                      │ (amnes… │         │         │          │         │    │</text>
+<text x="18" y="72" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                      │ incogn… │         │         │          │         │    │</text>
+<text x="18" y="92" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                      │ live    │         │         │          │         │    │</text>
+<text x="18" y="112" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                      │ system) │         │         │          │         │    │</text>
+<text x="18" y="132" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│ tor-browser          │ Tor     │  0.2 GB │ portab… │ privacy  │ privacy │ —  │</text>
+<text x="18" y="152" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                      │ Browser │         │         │          │         │    │</text>
+<text x="18" y="172" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                      │ (porta… │         │         │          │         │    │</text>
+<text x="18" y="192" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                      │ Linux)  │         │         │          │         │    │</text>
+<text x="18" y="212" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│ unshackle            │ Unshac… │  1.5 GB │ portab… │ dfir,it  │ forens… │ —  │</text>
+<text x="18" y="232" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                      │ (offli… │         │         │          │         │    │</text>
+<text x="18" y="252" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                      │ forens… │         │         │          │         │    │</text>
+<text x="18" y="272" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                      │ browse… │         │         │          │         │    │</text>
+<text x="18" y="292" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│ velociraptor-agents  │ Veloci… │ 0.05 GB │ tool    │ dfir,it  │ forens… │ —  │</text>
+<text x="18" y="312" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                      │ client  │         │         │          │         │    │</text>
+<text x="18" y="332" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                      │ (colle… │         │         │          │         │    │</text>
+<text x="18" y="352" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│ volatility3          │ Volati… │ 0.35 GB │ tool    │ dfir     │ forens… │ —  │</text>
+<text x="18" y="372" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                      │ 3       │         │         │          │         │    │</text>
+<text x="18" y="392" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                      │ (memory │         │         │          │         │    │</text>
+<text x="18" y="412" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                      │ forens… │         │         │          │         │    │</text>
+<text x="18" y="432" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│ whonix-workstation   │ Whonix  │  2.4 GB │ iso     │ privacy  │ privac… │ —  │</text>
+<text x="18" y="452" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                      │ Gateway │         │         │          │         │    │</text>
+<text x="18" y="472" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                      │ +       │         │         │          │         │    │</text>
+<text x="18" y="492" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                      │ Workst… │         │         │          │         │    │</text>
+<text x="18" y="512" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│ windows-11           │ Windows │  6.5 GB │ iso     │ it,gene… │ windows │ —  │</text>
+<text x="18" y="532" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                      │ 11      │         │         │          │         │    │</text>
+<text x="18" y="552" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                      │ Instal… │         │         │          │         │    │</text>
+<text x="18" y="572" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                      │ ISO     │         │         │          │         │    │</text>
+<text x="18" y="592" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│ winfe                │ Windows │    5 GB │ iso     │ dfir     │ forens… │ —  │</text>
+<text x="18" y="612" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                      │ FE      │         │         │          │         │    │</text>
+<text x="18" y="632" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                      │ imaging │         │         │          │         │    │</text>
+<text x="18" y="652" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                      │ (custom │         │         │          │         │    │</text>
+<text x="18" y="672" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                      │ build)  │         │         │          │         │    │</text>
+<text x="18" y="692" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">└──────────────────────┴─────────┴─────────┴─────────┴──────────┴─────────┴────┘</text>
+</svg>

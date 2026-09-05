@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="710">
+<rect width="100%" height="100%" fill="#0d1117"/>
+<rect x="8" y="18" width="1164" height="34" fill="#161b22" rx="7"/>
+<text x="24" y="41" font-family="DejaVu Sans,monospace" font-size="16" font-weight="bold" fill="#58a6ff">phntm help — the whole workflow on one screen  ·  exit 0</text>
+<text x="18" y="52" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">  phntm manifest validate -f build.json                      fits? valid?</text>
+<text x="18" y="72" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">  phntm build build.json --dry-run                           full plan, safe</text>
+<text x="18" y="92" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">&#160;</text>
+<text x="18" y="112" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">OFFLINE ARSENAL</text>
+<text x="18" y="132" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">  phntm fetch --all                                          grab ISOs →</text>
+<text x="18" y="152" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">~/.cache/phntm</text>
+<text x="18" y="172" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">  phntm fetch kali-linux hirens-boot-pe                      …or just a few</text>
+<text x="18" y="192" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">  phntm fetch --verify                                       re-check cached</text>
+<text x="18" y="212" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">files</text>
+<text x="18" y="232" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">  (resumable; sha256-verified when the catalog knows a hash)</text>
+<text x="18" y="252" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">&#160;</text>
+<text x="18" y="272" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">BUILD</text>
+<text x="18" y="292" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">  phntm build build.json -d auto -y                          single stick =</text>
+<text x="18" y="312" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">auto-pick</text>
+<text x="18" y="332" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">  phntm build build.json -d /dev/sdX -y                      explicit device</text>
+<text x="18" y="352" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">  (builds refuse wrong sizes, missing devices — loudly; flashes Ventoy, smart</text>
+<text x="18" y="372" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">upgrade)</text>
+<text x="18" y="392" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">&#160;</text>
+<text x="18" y="412" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">AFTER</text>
+<text x="18" y="432" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">  phntm status /media/USB                                    what is on the</text>
+<text x="18" y="452" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">stick?</text>
+<text x="18" y="472" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">  phntm status /dev/sdX                                      same, from the</text>
+<text x="18" y="492" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">block device</text>
+<text x="18" y="512" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">  phntm check build.json                                     is it current vs</text>
+<text x="18" y="532" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">catalog?</text>
+<text x="18" y="552" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">  phntm check /media/USB                                     same, from the</text>
+<text x="18" y="572" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">stick itself</text>
+<text x="18" y="592" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">&#160;</text>
+<text x="18" y="612" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">RULES OF THE STICK</text>
+<text x="18" y="632" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">  DROP/    plaintext scratch      VAULT/  encrypted (cryptsetup)</text>
+<text x="18" y="652" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">  PERSIST/ LUKS per-OS state      ISOS/   sha256-verified bootables</text>
+<text x="18" y="672" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">  phntm.json metadata             no phone-home, no cloud, no host needed</text>
+</svg>

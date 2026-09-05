@@ -4,6 +4,24 @@ All notable changes to PHNTM are tracked here. Format follows
 [Keep a Changelog](https://keepachangelog.com/); versioning follows
 [SemVer](https://semver.org/).
 
+## [1.6.0] — show it to the world 👻🎞️
+**A review section people can trust.** Every screenshot in the README is a real
+byte-for-byte terminal capture — regenerated on demand, never mocked.
+
+### Added
+- **`brand/screens/` gallery** — 12 screenshots: `help`, `presets`, `components`
+  (+ `--direct`), `build --dry-run`, `status` (built stick + clean non-stick refusal),
+  `cache`, `doctor`, `--version`, and the 4-screen wizard (persona / tier / plan)
+  via Textual's headless `save_screenshot`
+- **`tools/screenshots.py`** — one command regenerates everything: CLI shots run in a
+  real PTY and replay exact bytes through `pyte`; TUI shots drive `PhntmWizard` headless.
+  Requires `pyte` + ImageMagick.
+- **README Review section** — the gallery, grouped by workflow, with honest exit codes
+
+### Tests
+Full suite still **103 green** (screenshot tooling is a commit-time dev utility,
+exercised end-to-end by regenerating the gallery).
+
 ## [1.5.0] — known your stick 👻📡
 **PHNTM now talks to the stick itself.** `phntm status` and `phntm check` accept a raw
 block device (`/dev/sdX`) — PHNTM finds the mounted volume via `lsblk` and reads

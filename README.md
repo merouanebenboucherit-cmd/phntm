@@ -58,7 +58,7 @@ plans which physically won't fit:
 
 | Pick a persona | Tune the components | Preview the plan |
 |:---:|:---:|:---:|
-| <img src="brand/tui-persona.png" alt="Step 1 — choose a persona" width="330"/> | <img src="brand/tui-components.png" alt="Step 3 — tune components + live meter" width="330"/> | <img src="brand/tui-plan.png" alt="Step 4 — live size meter" width="330"/> |
+| <img src="brand/screens/raw-tui-persona.png" alt="Step 1 — choose a persona" width="330"/> | <img src="brand/screens/raw-tui-components.png" alt="Step 3 — tune components + live meter" width="330"/> | <img src="brand/screens/raw-tui-plan.png" alt="Step 4 — live size meter" width="330"/> |
 
 ```
 persona → tier → tune → save   uncheck an ISO/tool or toggle LUKS persistence and
@@ -66,6 +66,42 @@ persona → tier → tune → save   uncheck an ISO/tool or toggle LUKS persiste
                                engine the CLI uses, so a saved manifest ==
                                `phntm manifest new`
 ```
+
+## Review — real screenshots
+
+Every shot below is a **live byte-for-byte capture** of the actual CLI (through a real
+terminal) and the actual TUI (Textual headless), not mocked mockups. Regenerate anytime
+with `python tools/screenshots.py` (requires `pyte` + ImageMagick).
+
+### Plan & tune
+| `phntm help` — the whole workflow on one screen | `phntm presets` — 14 planned persona × tier builds |
+|:---:|:---:|
+| <img src="brand/screens/cli-help.png" alt="phntm help" width="400"/> | <img src="brand/screens/cli-presets.png" alt="phntm presets" width="400"/> |
+
+### Browse the arsenal
+| `phntm components` — search the 25-component catalog | `phntm components --direct` — only download-ready ISOs |
+|:---:|:---:|
+| <img src="brand/screens/cli-components.png" alt="phntm components" width="400"/> | <img src="brand/screens/cli-components-direct.png" alt="phntm components --direct" width="400"/> |
+
+### Build plan (zero side effects)
+| `phntm build --dry-run` — full plan, budget, steps, cache checks |
+|:---:|
+| <img src="brand/screens/cli-manifest-plan.png" alt="phntm build --dry-run" width="460"/> |
+
+### Status & cache
+| `phntm status` on a built stick | `phntm cache` — the offline arsenal |
+|:---:|:---:|
+| <img src="brand/screens/cli-status-stick.png" alt="phntm status" width="400"/> | <img src="brand/screens/cli-cache.png" alt="phntm cache" width="400"/> |
+
+### The wizard (TUI)
+| Step 1 — persona | Step 2 — tier | Step 3 — tune components + live meter | Step 4 — plan & save |
+|:---:|:---:|:---:|:---:|
+| <img src="brand/screens/raw-tui-persona.png" alt="wizard — persona" width="315"/> | <img src="brand/screens/raw-tui-tier.png" alt="wizard — tier" width="315"/> | <img src="brand/screens/raw-tui-components.png" alt="wizard — components" width="315"/> | <img src="brand/screens/raw-tui-plan.png" alt="wizard — plan" width="315"/> |
+
+### Health & version
+| `phntm doctor` — build-ready? | `phntm --version` |
+|:---:|:---:|
+| <img src="brand/screens/cli-doctor.png" alt="phntm doctor" width="460"/> | <img src="brand/screens/cli-version.png" alt="phntm --version" width="200"/> |
 
 ## Why PHNTM
 
@@ -139,13 +175,14 @@ VENTOY          bootloader  (any FAT/EXFAT/NTFS/x86 ISO boots)
 
 ## Status
 
-`1.5.0`
+`1.6.0`
 
 - **Core ✅** manifest engine, catalog (25 components), 14 presets, budget engine, device detection, CLI
 - **Wizard ✅** Textual TUI — persona → tier → tune components + live size meter
 - **Fetch ✅** `phntm fetch` — real ISOs into an offline cache, resumable + sha256-verified
 - **Build driver ✅** `phntm build … --yes` flashes Ventoy for real (upgrades smartly when the stick already has it)
-- **Stick-aware status ✅** `phntm status /dev/sdX` — block devices work, non-sticks get a clean one-liner — 103 tests
+- **Stick-aware status ✅** `phntm status /dev/sdX` — block devices work, non-sticks get a clean one-liner
+- **Review ✅** real screenshot gallery (PTY/TUI captures, `tools/screenshots.py` regenerates) — 103 tests
 
 follow for more
 

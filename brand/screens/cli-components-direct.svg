@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="490">
+<rect width="100%" height="100%" fill="#0d1117"/>
+<rect x="8" y="18" width="1164" height="34" fill="#161b22" rx="7"/>
+<text x="24" y="41" font-family="DejaVu Sans,monospace" font-size="16" font-weight="bold" fill="#58a6ff">phntm components --direct — only components with a download link  ·  exit 0</text>
+<text x="18" y="52" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">                     Catalog — 5 matches (catalog-2026.09)</text>
+<text x="18" y="72" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━┓</text>
+<text x="18" y="92" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">┃ id              ┃ name       ┃   size ┃ kind ┃ personas   ┃ categories  ┃ dl ┃</text>
+<text x="18" y="112" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━╇━━━━┩</text>
+<text x="18" y="132" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│ clonezilla-live │ Clonezilla │ 0.5 GB │ iso  │ it,dfir,g… │ rescue,uti… │ 🛰  │</text>
+<text x="18" y="152" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                 │ Live (disk │        │      │            │             │    │</text>
+<text x="18" y="172" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                 │ imaging)   │        │      │            │             │    │</text>
+<text x="18" y="192" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│ gparted-live    │ GParted    │ 0.6 GB │ iso  │ it,dfir,g… │ rescue      │ 🛰  │</text>
+<text x="18" y="212" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                 │ Live       │        │      │            │             │    │</text>
+<text x="18" y="232" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                 │ (partition │        │      │            │             │    │</text>
+<text x="18" y="252" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                 │ editor)    │        │      │            │             │    │</text>
+<text x="18" y="272" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│ hirens-boot-pe  │ Hiren's    │ 3.5 GB │ iso  │ it,dfir,g… │ rescue,win… │ 🛰  │</text>
+<text x="18" y="292" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                 │ BootCD PE  │        │      │            │             │    │</text>
+<text x="18" y="312" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                 │ (Win10PE)  │        │      │            │             │    │</text>
+<text x="18" y="332" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│ kali-linux      │ Kali Linux │ 4.3 GB │ iso  │ pentest,d… │ offensive,… │ 🛰  │</text>
+<text x="18" y="352" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                 │ (Live,     │        │      │            │             │    │</text>
+<text x="18" y="372" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                 │ non-persi… │        │      │            │             │    │</text>
+<text x="18" y="392" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│ systemrescue    │ SystemRes… │ 1.1 GB │ iso  │ it,privac… │ rescue      │ 🛰  │</text>
+<text x="18" y="412" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                 │ (rescue    │        │      │            │             │    │</text>
+<text x="18" y="432" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                 │ toolkit)   │        │      │            │             │    │</text>
+<text x="18" y="452" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">└─────────────────┴────────────┴────────┴──────┴────────────┴─────────────┴────┘</text>
+</svg>

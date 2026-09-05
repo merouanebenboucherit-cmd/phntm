@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="110">
+<rect width="100%" height="100%" fill="#0d1117"/>
+<rect x="8" y="18" width="1164" height="34" fill="#161b22" rx="7"/>
+<text x="24" y="41" font-family="DejaVu Sans,monospace" font-size="16" font-weight="bold" fill="#58a6ff">phntm status — refuses non-sticks cleanly  ·  exit 1</text>
+<text x="18" y="52" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">no phntm.json on '/tmp/phntm-demo-stick'. Is this a PHNTM-built stick? Run a</text>
+<text x="18" y="72" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">build with --mount, or point status at the mounted folder.</text>
+</svg>

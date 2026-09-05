@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="730">
+<rect width="100%" height="100%" fill="#0d1117"/>
+<rect x="8" y="18" width="1164" height="34" fill="#161b22" rx="7"/>
+<text x="24" y="41" font-family="DejaVu Sans,monospace" font-size="16" font-weight="bold" fill="#58a6ff">phntm presets — persona × tier matrix (14)  ·  exit 0</text>
+<text x="18" y="52" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">┏━━━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━━━┓</text>
+<text x="18" y="72" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">┃ Persona         ┃ Tier   ┃ Comps ┃ Est. size ┃ Budget note ┃</text>
+<text x="18" y="92" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">┡━━━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━━━━┩</text>
+<text x="18" y="112" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│ 🛠 │ 16 GB  │     9 │   10.7 GB │ ✅ fits     │</text>
+<text x="18" y="132" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">├─────────────────┼────────┼───────┼───────────┼─────────────┤</text>
+<text x="18" y="152" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                 │ 32 GB  │    12 │   22.9 GB │ ✅ fits     │</text>
+<text x="18" y="172" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">├─────────────────┼────────┼───────┼───────────┼─────────────┤</text>
+<text x="18" y="192" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                 │ 64 GB  │    15 │   33.2 GB │ ✅ fits     │</text>
+<text x="18" y="212" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">├─────────────────┼────────┼───────┼───────────┼─────────────┤</text>
+<text x="18" y="232" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│ 🎯 Pentester    │ 16 GB  │     7 │   11.3 GB │ ✅ fits     │</text>
+<text x="18" y="252" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">├─────────────────┼────────┼───────┼───────────┼─────────────┤</text>
+<text x="18" y="272" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                 │ 32 GB  │     8 │   27.6 GB │ ✅ fits     │</text>
+<text x="18" y="292" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">├─────────────────┼────────┼───────┼───────────┼─────────────┤</text>
+<text x="18" y="312" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                 │ 64 GB  │    11 │   46.1 GB │ ✅ fits     │</text>
+<text x="18" y="332" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">├─────────────────┼────────┼───────┼───────────┼─────────────┤</text>
+<text x="18" y="352" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│ 🔍 DFIR Analyst │ 16 GB  │     6 │   11.8 GB │ ✅ fits     │</text>
+<text x="18" y="372" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">├─────────────────┼────────┼───────┼───────────┼─────────────┤</text>
+<text x="18" y="392" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                 │ 32 GB  │    12 │   22.1 GB │ ✅ fits     │</text>
+<text x="18" y="412" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">├─────────────────┼────────┼───────┼───────────┼─────────────┤</text>
+<text x="18" y="432" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                 │ 64 GB  │    14 │   34.9 GB │ ✅ fits     │</text>
+<text x="18" y="452" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">├─────────────────┼────────┼───────┼───────────┼─────────────┤</text>
+<text x="18" y="472" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│ 🕶 │ 16 GB  │     5 │    9.0 GB │ ✅ fits     │</text>
+<text x="18" y="492" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">├─────────────────┼────────┼───────┼───────────┼─────────────┤</text>
+<text x="18" y="512" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                 │ 32 GB  │     8 │   18.9 GB │ ✅ fits     │</text>
+<text x="18" y="532" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">├─────────────────┼────────┼───────┼───────────┼─────────────┤</text>
+<text x="18" y="552" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                 │ 64 GB  │     9 │   28.2 GB │ ✅ fits     │</text>
+<text x="18" y="572" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">├─────────────────┼────────┼───────┼───────────┼─────────────┤</text>
+<text x="18" y="592" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│ 🧰 General Mix  │ 64 GB  │    13 │   42.5 GB │ ✅ fits     │</text>
+<text x="18" y="612" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">├─────────────────┼────────┼───────┼───────────┼─────────────┤</text>
+<text x="18" y="632" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">│                 │ 128 GB │    23 │   82.2 GB │ ✅ fits     │</text>
+<text x="18" y="652" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">└─────────────────┴────────┴───────┴───────────┴─────────────┘</text>
+<text x="18" y="672" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">&#160;</text>
+<text x="18" y="692" font-family="DejaVu Sans Mono,monospace" font-size="15" fill="#c9d1d9">Recommended: phntm manifest new --persona &lt;name&gt; --tier &lt;gb&gt; --out build.json</text>
+</svg>
