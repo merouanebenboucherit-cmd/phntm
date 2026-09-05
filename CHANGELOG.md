@@ -5,9 +5,21 @@ All notable changes to PHNTM are tracked here. Format follows
 [SemVer](https://semver.org/).
 
 ## [Unreleased]
-- M2: Textual TUI wizard with live size meter
 - M3: hardware drivers — real Ventoy build, LUKS persistence, QEMU boot-test
 - M4: catalog auto-refresh (`phntm update`), offline bundles, `phntm upgrade`
+
+## [1.1.0] — the wizard 👻✨
+**M2 — guided Textual TUI.** Same engine as the CLI, friendlier cockpit.
+
+### Added
+- `phntm tui`: 3-screen wizard — persona → tier → plan
+  - Persona picker (5 options incl. GENERAL) with curated descriptions
+  - Tier picker with per-tier estimated sizes + recommended badge
+  - Plan screen: **live size meter** (ProgressBar over usable capacity), full budget breakdown,
+    green/red overflow states, plugged-stick hint, manifest save with next-step commands
+- Optional `tui` extra (`pip install "phntm[tui]"`); CLI degrades gracefully with an install hint
+- 4 headless wizard tests (Textual `run_test` pilot): navigation, meter accuracy, manifest save
+- 54 tests total, all green on Python 3.11/3.12/3.13
 
 ## [1.0.0] — ghost protocol 👻
 First release. **M1 core — fully local, zero telemetry.**

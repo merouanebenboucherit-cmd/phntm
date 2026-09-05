@@ -47,6 +47,18 @@ def main(version: bool = typer.Option(False, "--version", callback=_version_cb, 
     """PHNTM command line interface."""
 
 
+# --------------------------------------------------------------------------- tui
+@app.command("tui")
+def cmd_tui() -> None:
+    """Launch the guided build wizard (Textual TUI)."""
+    try:
+        from .tui import run_wizard
+    except ImportError:
+        rprint("[red]the TUI wizard needs Textual: install with [bold]pip install 'phntm[tui]'[/][/]")
+        raise typer.Exit(1)
+    run_wizard()
+
+
 # --------------------------------------------------------------------------- presets
 @app.command("presets")
 def cmd_presets() -> None:
@@ -284,6 +296,9 @@ def cmd_check(
 def cmd_help() -> None:
     """The PHNTM pocket guide."""
     guide = """[bold cyan]PHNTM pocket guide[/]
+
+[b]WIZARD[/]
+  phntm tui                        guided: persona → tier → plan → save (TUI)
 
 [b]EXPLORE[/]
   phntm devices                     see plugged-in sticks + USB version + size

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "phntm"
-version = "1.0.0"
+version = "1.1.0"
 description = "PHNTM — build legendary USB sticks for IT, Pentest, DFIR and Privacy personas. Local-first, open source, zero telemetry."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -37,7 +37,7 @@ Changelog = "https://github.com/merouanebenboucherit-cmd/phntm/blob/main/CHANGEL
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0", "pytest-cov>=4.0"]
-tui = ["textual>=0.60"]
+tui = ["textual>=6.0"]
 
 [project.scripts]
 phntm = "phntm.cli:app"

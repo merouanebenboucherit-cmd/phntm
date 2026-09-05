@@ -4,10 +4,13 @@
   <img src="brand/phntm-logo.svg" alt="PHNTM — Ghost USB logo" width="320"/>
 </p>
 
-![CI](https://github.com/merouanebenboucherit-cmd/phntm/actions/workflows/ci.yml/badge.svg)
-![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)
-![Python](https://img.shields.io/badge/python-3.11%2B-blue)
-![PyPI](https://img.shields.io/pypi/v/phntm)
+<p align="center">
+  <img src="https://github.com/merouanebenboucherit-cmd/phntm/actions/workflows/ci.yml/badge.svg" alt="CI"/>&nbsp;
+  <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"/>&nbsp;
+  <img src="https://img.shields.io/badge/python-3.11%2B-blue" alt="Python 3.11+"/>&nbsp;
+  <img src="https://img.shields.io/pypi/v/phntm" alt="PyPI"/>&nbsp;
+  <img src="https://img.shields.io/badge/tests-54%20passing-brightgreen" alt="tests: 54 passing"/>
+</p>
 
 **Build legendary USB sticks.** IT Tech, Pentester, DFIR, Privacy — pick a persona, pick a size, get a battle-tested bootable stick.
 
@@ -20,10 +23,9 @@
                                        (+128 GB BANSHEE for GENERAL)
 ```
 
-## Concept 
+## Concept
 
-concept art of the PHNTM idea ,
-originals in `brand/*-ai.png`):
+concept art of the PHNTM idea — originals in `brand/*-ai.png`:
 
 <p align="center">
   <img src="brand/phntm-hero-ai-web.png" alt="PHNTM hero concept — personas into tiers into a legendary stick" width="820"/>
@@ -35,10 +37,25 @@ originals in `brand/*-ai.png`):
 
 ---
 
+## The wizard ✨
+
+`phntm tui` — a guided, keyboard-first wizard that turns a persona + a stick size
+into a validated build plan, with a **live size meter** that refuses plans which
+physically won't fit:
+
+| Pick a persona | Preview the plan |
+|:---:|:---:|
+| <img src="brand/tui-persona.png" alt="Step 1 — choose a persona" width="420"/> | <img src="brand/tui-plan.png" alt="Step 3 — live size meter" width="460"/> |
+
+```
+persona → tier → plan → save        every screen is the same engine the CLI uses,
+                                    so a manifest saved here == `phntm manifest new`
+```
+
 ## Why PHNTM
 
 - **Manifests, not magic** — every stick is a validated `BuildManifest` (v1). The same file drives building, status, and updates.
-- **The size engine** — PHNTM computes the real budget (ISOs + persistence + vault + drop) against the stick's usable capacity and *refuses* lies.
+- **The size engine** — PHNTM computes the real budget (ISOs + persistence + vault + drop) against the stick's usable capacity and *refuses lies*.
 - **sha256 everywhere** — nothing lands on a stick unverified.
 - **No-sudo flashing** — Ventoy native **or** Docker fallback. Works on this very workstation.
 - **Sees your stick** — `phntm devices` reads size, USB 2.0/3.0/3.1/3.2 speed, vendor/model straight from sysfs; `build -d auto` picks the single plugged stick and refuses sticks that physically can't hold the plan.
@@ -50,30 +67,44 @@ originals in `brand/*-ai.png`):
 # from the repo (recommended for now)
 git clone https://github.com/merouanebenboucherit-cmd/phntm.git
 cd phntm
-python3 -m venv .venv && .venv/bin/pip install -e ".[dev]"
+python3 -m venv .venv && .venv/bin/pip install -e ".[dev,tui]"
 alias phntm="$HOME/phntm/.venv/bin/phntm"   # or add .venv/bin to PATH
 
 # once published to PyPI:
-pip install phntm
+pip install "phntm[tui]"
 ```
 
 ## Quickstart
 
 ```bash
-phntm help                                       # pocket guide
-phntm devices                                    # detect stick: size + USB 2.0/3.0 + model
-phntm presets                                    # browse personas × tiers
-phntm components --persona dfir                  # browse catalog
-phntm doctor                                     # is this machine build-ready?
+phntm tui                                            # ✨ the wizard: persona → tier → plan
+phntm devices                                        # detect stick: size + USB 2.0/3.0 + model
+phntm presets                                        # browse personas × tiers
+phntm doctor                                         # is this machine build-ready?
 
-phntm manifest new -p pentest -t 32 -o build.json
-phntm manifest validate -f build.json            # sanity + fits-on-stick check
-phntm build build.json --dry-run                 # full plan, zero side effects
-phntm build build.json -d auto -y                # real build, auto-picks the single stick
-phntm status /media/USB                          # what's on the stick
-phntm check build.json                           # fresh vs catalog? (stick or manifest)
-phntm update                                     # catalog status (M4: auto-refresh)
+phntm build build.json --dry-run                     # full plan, zero side effects
+phntm build build.json -d auto -y                    # real build, auto-picks the single stick
+phntm status /media/USB                              # what's on the stick
+phntm check build.json                               # fresh vs catalog? (stick or manifest)
+phntm update                                         # catalog status (M4: auto-refresh)
 ```
+
+## Commands
+
+| Command | What it does |
+|---|---|
+| `phntm tui` | **guided wizard** — persona → tier → plan with live size meter |
+| `phntm devices` | detect plugged-in sticks: size, USB speed, vendor/model |
+| `phntm presets` | persona × tier matrix — 16 presets with estimated sizes |
+| `phntm components [kw]` | browse the catalog (`--persona`, `--category`) |
+| `phntm manifest new -p <persona> -t <tier> -o f.json` | create a build manifest |
+| `phntm manifest validate -f f.json` | sanity + fits-on-stick check |
+| `phntm build f.json --dry-run` | full plan, zero side effects |
+| `phntm build f.json -d auto -y` | real build (refuses wrong-size/wrong-category sticks) |
+| `phntm status /media/USB` | what a PHNTM stick contains |
+| `phntm check <manifest-or-stick>` | freshness diff vs catalog (M4: auto-upgrade) |
+| `phntm update` | catalog status; auto-refresh + offline bundles in M4 |
+| `phntm doctor` | is this machine ready to build sticks? |
 
 ## Anatomy of a built stick
 
@@ -89,9 +120,15 @@ VENTOY          bootloader  (any FAT/EXFAT/NTFS/x86 ISO boots)
 
 ## Status
 
-`1.0.0` — M1 core: manifest engine, catalog, 16 presets, budget engine, device detection, CLI, 50 tests.
-M2 = Textual TUI, M3 = hardware drivers (Ventoy/persist/vault/QEMU), M4 = updates + offline bundles.
+`1.1.0`
+
+- **M1 ✅** manifest engine, catalog (26 components), 16 presets, budget engine, device detection, CLI, 54 tests
+- **M2 ✅** Textual TUI wizard with live size meter
+- **M3 ⏳** hardware drivers — real Ventoy build, LUKS persistence, QEMU boot-test
+- **M4 ⏳** catalog auto-refresh (`phntm update`), offline bundles, `phntm upgrade`
+
 follow for more
+
 ## Project files
 
 - [CHANGELOG.md](CHANGELOG.md) — release history
@@ -101,4 +138,4 @@ follow for more
 
 ## License
 
-MIT.  fork it, build on it — keep the crediting line.
+MIT. Fork it, build on it — keep the crediting line.
