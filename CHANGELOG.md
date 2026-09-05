@@ -4,10 +4,6 @@ All notable changes to PHNTM are tracked here. Format follows
 [Keep a Changelog](https://keepachangelog.com/); versioning follows
 [SemVer](https://semver.org/).
 
-## [Unreleased]
-- M3: hardware drivers — real Ventoy build, LUKS persistence, QEMU boot-test
-- M4: catalog auto-refresh (`phntm update`), offline bundles, `phntm upgrade`
-
 ## [1.2.0] — tune the plan 👻🔧
 **M2 hardened — a real tuning cockpit.** The wizard is now 4 screens.
 

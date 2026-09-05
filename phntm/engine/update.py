@@ -1,7 +1,7 @@
 """Catalog-vs-stick freshness diff.
 
 `phntm check` compares what a manifest or stick pins against the current
-catalog. M4 grows this module into a full `phntm upgrade` (download + apply);
+catalog. A later release grows this module into a full `phntm upgrade` (download + apply);
 today it reports truth locally and honestly.
 """
 

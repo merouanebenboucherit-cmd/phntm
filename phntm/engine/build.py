@@ -143,10 +143,8 @@ def run_build(
         if step.optional:
             continue
         if step.command is None:
-            # Real drivers land in M3; the orchestrator already validated everything.
             raise BuildError(
-                f"step '{step.id}' has no driver attached yet (expected for M1 milestone). "
-                "Hardware drivers arrive in the v1.0 release track."
+                f"step '{step.id}' has no driver attached yet."
             )
         step.command()
 

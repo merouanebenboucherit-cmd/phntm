@@ -88,7 +88,7 @@ phntm build build.json --dry-run                     # full plan, zero side effe
 phntm build build.json -d auto -y                    # real build, auto-picks the single stick
 phntm status /media/USB                              # what's on the stick
 phntm check build.json                               # fresh vs catalog? (stick or manifest)
-phntm update                                         # catalog status (M4: auto-refresh)
+phntm update                                         # catalog status
 ```
 
 ## Commands
@@ -104,8 +104,8 @@ phntm update                                         # catalog status (M4: auto-
 | `phntm build f.json --dry-run` | full plan, zero side effects |
 | `phntm build f.json -d auto -y` | real build (refuses wrong-size/wrong-category sticks) |
 | `phntm status /media/USB` | what a PHNTM stick contains |
-| `phntm check <manifest-or-stick>` | freshness diff vs catalog (M4: auto-upgrade) |
-| `phntm update` | catalog status; auto-refresh + offline bundles in M4 |
+| `phntm check <manifest-or-stick>` | freshness diff vs catalog |
+| `phntm update` | catalog status |
 | `phntm doctor` | is this machine ready to build sticks? |
 
 ## Anatomy of a built stick
@@ -124,10 +124,8 @@ VENTOY          bootloader  (any FAT/EXFAT/NTFS/x86 ISO boots)
 
 `1.2.0`
 
-- **M1 ✅** manifest engine, catalog (26 components), 16 presets, budget engine, device detection, CLI, 54 tests
-- **M2 ✅** Textual TUI wizard — persona → tier → tune components + live size meter (57 tests)
-- **M3 ⏳** hardware drivers — real Ventoy build, LUKS persistence, QEMU boot-test
-- **M4 ⏳** catalog auto-refresh (`phntm update`), offline bundles, `phntm upgrade`
+- **Core ✅** manifest engine, catalog (26 components), 16 presets, budget engine, device detection, CLI
+- **Wizard ✅** Textual TUI — persona → tier → tune components + live size meter (57 tests)
 
 follow for more
 

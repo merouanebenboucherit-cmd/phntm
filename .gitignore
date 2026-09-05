@@ -20,3 +20,5 @@ htmlcov/
 *.img
 *.vhd
 .iso-cache/
+# Private / internal-only (never pushed to GitHub)
+.private/

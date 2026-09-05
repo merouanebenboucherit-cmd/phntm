@@ -153,7 +153,7 @@ def cmd_doctor() -> None:
     docker = shutil.which("docker")
     checks.append(("docker", docker or "missing → ventoy native fallback ok", docker is not None))
     qemu = shutil.which("qemu-system-x86_64")
-    checks.append(("qemu", qemu or "missing (needed for M3 boot-tests)", qemu is not None))
+    checks.append(("qemu", qemu or "missing — needed to boot-test sticks once the driver is wired", qemu is not None))
 
     for name, val, ok in checks:
         rprint(f"  {'✅' if ok else '⚠️'} {name:<10} {val}")
@@ -285,8 +285,7 @@ def cmd_check(
     if not diff.outdated:
         rprint("  [green]Fully current — nothing to do.[/]")
     elif diff.stale:
-        rprint("\n  [yellow]Auto-upgrade lands in M4 ([bold]phntm upgrade[/]); reflashing "
-               "the affected ISOs from the new URLs is safe today.[/]")
+        rprint("\n  [yellow]Re-flash the affected ISOs from the new download URLs to refresh a build.[/]")
     if diff.vanished:
         raise typer.Exit(1)
 
@@ -407,12 +406,11 @@ def cmd_status(device: str = typer.Argument(..., help="stick mount point or bloc
 def cmd_update(
     dry: bool = typer.Option(True, "--dry-run/--apply", help="show what would change (default)"),
 ) -> None:
-    """Refresh the component catalog (v1: informational; auto-pull lands in M4)."""
+    """Refresh the component catalog (v1: informational)."""
     current = load_catalog()
     rprint(f"[bold]catalog[/] {catalog_version()} — {len(current)} components")
     if dry:
-        rprint("[yellow]v1.0 ships the bundled catalog. Network refresh lands in M4 together "
-               "with offline bundles and signature verification.[/]")
+        rprint("[yellow]This build ships the bundled catalog. Network refresh arrives in a later release.[/]")
     else:
         rprint("[yellow]automatic catalog pull is not wired yet; keep this build fully local by design.[/]")
 
@@ -420,11 +418,11 @@ def cmd_update(
 # --------------------------------------------------------------------------- test
 @app.command("test")
 def cmd_test(device: str = typer.Option("", "--device", "-d", help="/dev/sdX of the stick")) -> None:
-    """QEMU boot-test a stick (M3 — reports what will happen)."""
+    """QEMU boot-test a stick (planned)."""
     if not device:
         rprint("[red]--device /dev/sdX is required (the stick you want to boot-test)[/]")
         raise typer.Exit(1)
-    rprint(f"[yellow]QEMU boot-test driver lands in M3. Planned: qemu-system-x86_64 -drive file={device},if=none…[/]")
+    rprint(f"[yellow]QEMU boot-test driver is planned. Coming: qemu-system-x86_64 -drive file={device},if=none…[/]")
 
 
 # --------------------------------------------------------------------------- helpers

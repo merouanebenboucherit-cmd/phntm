@@ -1,1 +1,1 @@
-"""Hardware drivers and build orchestration (M3 track)."""
+"""Hardware drivers and build orchestration."""
