@@ -18,6 +18,7 @@ from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.screen import Screen
 from textual.widgets import (
     Button,
+    Checkbox,
     Footer,
     Input,
     ProgressBar,
@@ -115,6 +116,22 @@ Button.primary {{
     height: auto;
 }}
 
+#comps {{
+    border: round {BORDER};
+    background: {PANEL};
+    height: 1fr;
+    padding: 0 1;
+}}
+
+#comps Checkbox {{
+    padding-left: 1;
+}}
+
+#comps Checkbox:focus {{
+    background: {GHOST};
+    color: {BG};
+}}
+
 #hint {{
     color: {MUTED};
     margin: 1 0;
@@ -152,7 +169,7 @@ class PersonaScreen(Screen[None]):
         app = cast(PhntmWizard, self.app)
         yield Footer()
         with Vertical(id="step"):
-            yield Static("STEP 1/3 — who is this stick for?", classes="step-tag")
+            yield Static("STEP 1/4 — who is this stick for?", classes="step-tag")
             yield Static("Choose a persona", classes="title")
             with RadioSet(id="personas"):
                 default = app.state.persona or available_personas()[0]
@@ -198,7 +215,7 @@ class TierScreen(Screen[None]):
         yield Footer()
         with Vertical(id="step"):
             yield Static(
-                f"STEP 2/3 — {data.emoji} {data.label}", classes="step-tag"
+                f"STEP 2/4 — {data.emoji} {data.label}", classes="step-tag"
             )
             yield Static("Choose the stick size", classes="title")
             with RadioSet(id="tiers"):
@@ -233,7 +250,113 @@ class TierScreen(Screen[None]):
             return
         app.state.tier = tiers_for(persona)[idx]
         manifest = manifest_from_preset(persona, app.state.tier)
+        self.app.push_screen(ComponentsScreen(manifest))
+
+
+class ComponentsScreen(Screen[None]):
+    """Step 3 — tune the component list.
+
+    Every checkbox (and the LUKS persistence toggle) recomputes the budget
+    live: the meter turns red the moment a plan stops fitting.
+    """
+
+    BINDINGS = [("escape", "app.pop_screen", "back")]
+
+    def __init__(self, manifest: BuildManifest) -> None:
+        super().__init__()
+        self.manifest = manifest
+
+    def compose(self) -> ComposeResult:
+        app = cast(PhntmWizard, self.app)
+        persona = self.manifest.persona
+        presets = app.presets[persona.value]
+        yield Footer()
+        with Vertical(id="step"):
+            yield Static(
+                f"STEP 3/4 — {presets.emoji} {presets.label} · {self.manifest.tier} GB",
+                classes="step-tag",
+            )
+            yield Static("Tune the components", classes="title")
+            yield ProgressBar(total=1, id="meter")
+            yield Static("", id="used")
+            with VerticalScroll(id="comps"):
+                for cid in self.manifest.components:
+                    entry = app.catalog[cid]
+                    yield Checkbox(
+                        f"{entry.name}  ({entry.size_gb:g} GB)",
+                        value=True,
+                        id=f"cb-{cid}",
+                    )
+                if self.manifest.persistence.enabled:
+                    size = self.manifest.persistence.size_gb or 0.0
+                    yield Checkbox(
+                        f"🔐 LUKS persistence ({size:g} GB)",
+                        value=self.manifest.persistence.enabled,
+                        id="cb-persist",
+                    )
+            yield Static("", id="desc")
+            yield Horizontal(
+                Button("← Back", id="back"),
+                Button("Preview plan →", id="next", variant="primary"),
+            )
+
+    def on_mount(self) -> None:
+        self._refresh()
+
+    def on_checkbox_changed(self, event: Checkbox.Changed) -> None:
+        self._refresh()
+
+    def _current_manifest(self) -> BuildManifest:
+        """Rebuild the manifest from the checkbox states."""
+        selected = [
+            cid
+            for cid in self.manifest.components
+            if self.query_one(f"#cb-{cid}", Checkbox).value
+        ]
+        # the persistence box only exists when the preset ships one
+        persist_boxes = list(self.query("#cb-persist"))
+        enabled = bool(persist_boxes) and persist_boxes[0].value
+        persistence = self.manifest.persistence.model_copy(update={"enabled": enabled})
+        return self.manifest.model_copy(
+            update={"components": selected, "persistence": persistence}
+        )
+
+    def _refresh(self) -> None:
+        app = cast(PhntmWizard, self.app)
+        manifest = self._current_manifest()
         budget = compute_budget(manifest, app.catalog)
+        over = budget.used_gb > budget.capacity_gb
+
+        meter = self.query_one("#meter", ProgressBar)
+        meter.total = max(budget.capacity_gb, budget.used_gb, 1.0)
+        meter.progress = budget.used_gb
+        meter.set_class(over, "over")
+
+        state = "❌ OVER BUDGET — drop components or raise the tier" if over else (
+            "✅ Fits — ready to preview" if manifest.components else "pick at least one component"
+        )
+        self.query_one("#used", Static).update(
+            f"{budget.used_gb:.2f} GB used of {budget.capacity_gb:.2f} GB usable "
+            f"({budget.utilization:.0%})  —  {state}"
+        )
+        self.query_one("#desc", Static).update(
+            f"{len(manifest.components)} component(s) selected · "
+            f"DROP {manifest.drop_gb:g} GB scratch · VAULT {manifest.vault_gb:g} GB encrypted"
+        )
+        self.query_one("#next", Button).disabled = bool(over) or not manifest.components
+
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        if event.button.id == "back":
+            self.app.pop_screen()
+            return
+        if event.button.id != "next":
+            return
+        app = cast(PhntmWizard, self.app)
+        manifest = self._current_manifest()
+        budget = compute_budget(manifest, app.catalog)
+        if budget.used_gb > budget.capacity_gb or not manifest.components:
+            self.app.notify("The plan does not fit — tune it first", severity="warning")
+            return
         self.app.push_screen(PlanScreen(manifest, budget))
 
 
@@ -257,7 +380,7 @@ class PlanScreen(Screen[None]):
         yield Footer()
         with VerticalScroll(id="step"):
             yield Static(
-                f"STEP 3/3 — {emoji} {app.presets[persona.value].label} · {self.manifest.tier} GB",
+                f"STEP 4/4 — {emoji} {app.presets[persona.value].label} · {self.manifest.tier} GB",
                 classes="step-tag",
             )
             yield Static(f"[bold]Plan: {self.manifest.name}[/]", classes="title")

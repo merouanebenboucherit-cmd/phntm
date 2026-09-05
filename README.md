@@ -40,16 +40,18 @@ concept art of the PHNTM idea — originals in `brand/*-ai.png`:
 ## The wizard ✨
 
 `phntm tui` — a guided, keyboard-first wizard that turns a persona + a stick size
-into a validated build plan, with a **live size meter** that refuses plans which
-physically won't fit:
+into a validated build plan you can **tune**, with a **live size meter** that refuses
+plans which physically won't fit:
 
-| Pick a persona | Preview the plan |
-|:---:|:---:|
-| <img src="brand/tui-persona.png" alt="Step 1 — choose a persona" width="420"/> | <img src="brand/tui-plan.png" alt="Step 3 — live size meter" width="460"/> |
+| Pick a persona | Tune the components | Preview the plan |
+|:---:|:---:|:---:|
+| <img src="brand/tui-persona.png" alt="Step 1 — choose a persona" width="330"/> | <img src="brand/tui-components.png" alt="Step 3 — tune components + live meter" width="330"/> | <img src="brand/tui-plan.png" alt="Step 4 — live size meter" width="330"/> |
 
 ```
-persona → tier → plan → save        every screen is the same engine the CLI uses,
-                                    so a manifest saved here == `phntm manifest new`
+persona → tier → tune → save   uncheck an ISO/tool or toggle LUKS persistence and
+                               the meter reacts live. Every screen is the same
+                               engine the CLI uses, so a saved manifest ==
+                               `phntm manifest new`
 ```
 
 ## Why PHNTM
@@ -93,7 +95,7 @@ phntm update                                         # catalog status (M4: auto-
 
 | Command | What it does |
 |---|---|
-| `phntm tui` | **guided wizard** — persona → tier → plan with live size meter |
+| `phntm tui` | **guided wizard** — persona → tier → tune components → live-meter plan |
 | `phntm devices` | detect plugged-in sticks: size, USB speed, vendor/model |
 | `phntm presets` | persona × tier matrix — 16 presets with estimated sizes |
 | `phntm components [kw]` | browse the catalog (`--persona`, `--category`) |
@@ -120,10 +122,10 @@ VENTOY          bootloader  (any FAT/EXFAT/NTFS/x86 ISO boots)
 
 ## Status
 
-`1.1.0`
+`1.2.0`
 
 - **M1 ✅** manifest engine, catalog (26 components), 16 presets, budget engine, device detection, CLI, 54 tests
-- **M2 ✅** Textual TUI wizard with live size meter
+- **M2 ✅** Textual TUI wizard — persona → tier → tune components + live size meter (57 tests)
 - **M3 ⏳** hardware drivers — real Ventoy build, LUKS persistence, QEMU boot-test
 - **M4 ⏳** catalog auto-refresh (`phntm update`), offline bundles, `phntm upgrade`
 

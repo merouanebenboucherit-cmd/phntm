@@ -8,6 +8,16 @@ All notable changes to PHNTM are tracked here. Format follows
 - M3: hardware drivers — real Ventoy build, LUKS persistence, QEMU boot-test
 - M4: catalog auto-refresh (`phntm update`), offline bundles, `phntm upgrade`
 
+## [1.2.0] — tune the plan 👻🔧
+**M2 hardened — a real tuning cockpit.** The wizard is now 4 screens.
+
+### Added
+- **Components screen (step 3)**: every ISOs/tool becomes a checkbox; uncheck to drop it
+- **LUKS persistence toggle** — off by default; flip it to add/remove the encrypted volume
+- **Live recompute**: meter, used/total, utilization, and the DROP/VAULT line all react instantly
+- **Overflow guard**: uncheck-too-much or oversize plans lock the "Next" button and warn
+- 3 new wizard tests (components list, tune-to-metter, persistence toggle) — **57 total**
+
 ## [1.1.0] — the wizard 👻✨
 **M2 — guided Textual TUI.** Same engine as the CLI, friendlier cockpit.
 
