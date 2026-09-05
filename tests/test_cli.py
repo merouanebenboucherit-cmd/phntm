@@ -113,16 +113,17 @@ def test_manifest_show_prints_json():
     assert '"persona": "privacy"' in result.stdout
 
 
-def test_build_dry_run_without_device_still_plans(tmp_path):
-    """--no-dry-run without --device must degrade to a plan, never execute."""
+def test_build_no_dry_run_without_device_refuses(tmp_path):
+    """--no-dry-run without --device must refuse loudly — never silently plan."""
     from phntm.presets import manifest_from_preset
     from phntm.models import Persona
 
     m = tmp_path / "m.json"
     m.write_text(manifest_from_preset(Persona.IT, 64).model_dump_json())
     result = run("build", str(m), "--no-dry-run")
-    assert result.exit_code == 0
-    assert "BUDGET" in result.stdout
+    assert result.exit_code == 1
+    assert "--device" in result.stdout
+    assert "BUDGET" not in result.stdout
 
 
 def test_update():
@@ -179,3 +180,96 @@ def test_fetch_tty_progress_branch_cleans_up_on_missing(monkeypatch, tmp_path):
     result = run("fetch", "--verify", "--all", "--cache", str(tmp_path))
     assert result.exit_code == 1
     assert "not cached" in result.stdout
+
+
+# ---------------------------------------------------------------- v1.5.0 additions
+def test_status_clean_error_when_not_a_stick(tmp_path):
+    result = run("status", str(tmp_path))
+    assert result.exit_code == 1
+    assert "PHNTM-built stick" in result.stdout
+    assert "Traceback" not in result.stdout
+
+
+def test_status_on_stick_dir(tmp_path):
+    from phntm.engine.build import metadata_for
+    from phntm.engine.metadata import write_metadata
+    from phntm.catalog import load_catalog
+    from phntm.presets import manifest_from_preset
+    from phntm.models import Persona
+
+    catalog = load_catalog()
+    manifest = manifest_from_preset(Persona.PRIVACY, 16)
+    write_metadata(tmp_path, metadata_for(manifest, catalog))
+    result = run("status", str(tmp_path))
+    assert result.exit_code == 0, result.stdout
+    assert "PHNTM stick status" in result.stdout
+    assert "metadata: " in result.stdout
+
+
+def test_check_on_stick_dir(tmp_path):
+    from phntm.engine.build import metadata_for
+    from phntm.engine.metadata import write_metadata
+    from phntm.catalog import load_catalog
+    from phntm.presets import manifest_from_preset
+    from phntm.models import Persona
+
+    catalog = load_catalog()
+    manifest = manifest_from_preset(Persona.PENTEST, 64)
+    write_metadata(tmp_path, metadata_for(manifest, catalog))
+    result = run("check", str(tmp_path))
+    assert result.exit_code == 0, result.stdout
+    assert "vs catalog" in result.stdout
+
+
+def test_components_kind_and_direct_filters():
+    iso = run("components", "--kind", "iso")
+    assert iso.exit_code == 0
+    assert "kali-linux" in iso.stdout
+    # a non-iso tool must not leak into --kind iso results
+    assert "nmap-portable" not in iso.stdout
+
+    tool = run("components", "--kind", "tool")
+    assert tool.exit_code == 0
+    assert "nmap-portable" in tool.stdout
+    assert "kali-linux" not in tool.stdout
+
+    direct = run("components", "--kind", "iso", "--direct")
+    assert direct.exit_code == 0
+    # direct-only: every row has a download link; page-only ISOs are excluded
+    assert "kali-linux" in direct.stdout
+    assert "memtest86plus" not in direct.stdout  # page-only ISO (no direct link)
+
+
+def test_fetch_continues_on_partial_failure(monkeypatch):
+    """One failing component must not abort siblings; exit 1 with a tally."""
+    from types import SimpleNamespace
+
+    from phntm.catalog import load_catalog
+    from phntm.engine.fetch import FetchError
+
+    catalog = load_catalog()
+    good = catalog["kali-linux"]  # has a direct download_url
+    bad = catalog["memtest86plus"]  # page-only — the fetch module refuses
+    calls: list[str] = []
+
+    def fake_fetch(entry, cache=None, verify_only=False, progress=None):
+        calls.append(entry.id)
+        if entry.id == bad.id:
+            raise FetchError("no direct download URL on record")
+        return SimpleNamespace(
+            entry=entry, fresh=False, checksum_ok=None, size=1024 * 1024
+        )
+
+    monkeypatch.setattr("phntm.engine.fetch.fetch", fake_fetch)
+    result = run("fetch", good.id, bad.id)
+    assert result.exit_code == 1
+    assert calls == [good.id, bad.id]     # both were attempted, in order
+    assert "1 of 2 failed" in result.stdout
+    assert good.id in result.stdout       # the successful one was reported
+
+
+def test_help_guide_covers_filters_and_tiers():
+    result = run("help")
+    assert result.exit_code == 0
+    for token in ("--direct", "16/32/64/128", "OFFLINE ARSENAL", "sha256"):
+        assert token in result.stdout

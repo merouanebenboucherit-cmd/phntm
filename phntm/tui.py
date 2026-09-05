@@ -361,7 +361,7 @@ class ComponentsScreen(Screen[None]):
 
 
 class PlanScreen(Screen[None]):
-    """Step 3 — the full plan with a live size meter, then save."""
+    """Step 4 — the full plan with a live size meter, then save."""
 
     BINDINGS = [("escape", "app.pop_screen", "back")]
 

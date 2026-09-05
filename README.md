@@ -87,7 +87,7 @@ phntm fetch --all                                    # 🛰 grab ISOs into ~/.ca
 
 phntm build build.json --dry-run                     # full plan, zero side effects (shows what's not cached yet)
 phntm build build.json -d auto -y                    # real build, auto-picks the single stick
-phntm status /media/USB                              # what's on the stick
+phntm status /media/USB                              # what's on the stick (mount folder, or /dev/sdX)
 phntm check build.json                               # fresh vs catalog? (stick or manifest)
 phntm cache                                          # what's sitting in the offline cache
 phntm update                                         # catalog status
@@ -99,17 +99,17 @@ phntm update                                         # catalog status
 |---|---|
 | `phntm tui` | **guided wizard** — persona → tier → tune components → live-meter plan |
 | `phntm devices` | detect plugged-in sticks: size, USB speed, vendor/model, Ventoy state |
-| `phntm presets` | persona × tier matrix — 16 presets with estimated sizes |
-| `phntm components [kw]` | browse the catalog (`--persona`, `--category`) |
+| `phntm presets` | persona × tier matrix — 14 presets with estimated sizes |
+| `phntm components [kw]` | browse the catalog (`--persona`, `--category`, `--kind`, `--direct`) |
 | `phntm manifest new -p <persona> -t <tier> -o f.json` | create a build manifest |
 | `phntm manifest validate -f f.json` | sanity + fits-on-stick check |
 | `phntm build f.json --dry-run` | full plan, zero side effects |
 | `phntm build f.json -d auto -y` | real build — flashes Ventoy for real (smart upgrade), halts before the copy layer |
-| `phntm status /media/USB` | what a PHNTM stick contains |
+| `phntm status /media/USB` | what a PHNTM stick contains (or `phntm status /dev/sdX` — PHNTM finds its volume) |
 | `phntm check <manifest-or-stick>` | freshness diff vs catalog |
 | `phntm update` | catalog status |
 | `phntm doctor` | is this machine ready to build sticks? |
-| `phntm fetch <id>… / --all / -m f.json` | download ISOs into `~/.cache/phntm` — resumable, sha256-checked when the catalog knows a hash |
+| `phntm fetch <id>… / --all / -m f.json` | download ISOs into `~/.cache/phntm` — resumable, sha256-checked, keeps going if one component fails |
 | `phntm cache` | what's cached, and how much space it takes |
 
 ## Anatomy of a built stick
@@ -126,12 +126,13 @@ VENTOY          bootloader  (any FAT/EXFAT/NTFS/x86 ISO boots)
 
 ## Status
 
-`1.4.0`
+`1.5.0`
 
-- **Core ✅** manifest engine, catalog (25 components), 16 presets, budget engine, device detection, CLI
+- **Core ✅** manifest engine, catalog (25 components), 14 presets, budget engine, device detection, CLI
 - **Wizard ✅** Textual TUI — persona → tier → tune components + live size meter
 - **Fetch ✅** `phntm fetch` — real ISOs into an offline cache, resumable + sha256-verified
-- **Build driver ✅** `phntm build … --yes` flashes Ventoy for real (upgrades smartly when the stick already has it) — 89 tests
+- **Build driver ✅** `phntm build … --yes` flashes Ventoy for real (upgrades smartly when the stick already has it)
+- **Stick-aware status ✅** `phntm status /dev/sdX` — block devices work, non-sticks get a clean one-liner — 103 tests
 
 follow for more
 

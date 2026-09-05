@@ -4,10 +4,11 @@ from __future__ import annotations
 
 import os
 import shutil
-import subprocess
 from dataclasses import dataclass
 from typing import Callable, Dict, List
 
+from .. import VERSION
+from ..catalog import catalog_version
 from ..models import BuildManifest, CatalogEntry, StickMetadata
 from ..sizer import compute_budget
 
@@ -163,18 +164,18 @@ def run_build(
             )
         step.command()
 
-    return metadata_for(manifest, catalog, tool_version="1.0.0")
+    return metadata_for(manifest, catalog, tool_version=VERSION)
 
 
 def metadata_for(
     manifest: BuildManifest,
     catalog: Dict[str, CatalogEntry],
-    tool_version: str,
-    catalog_version: str = "catalog-2026.09",
+    tool_version: str = VERSION,
+    catalog_ver: str | None = None,
 ) -> StickMetadata:
     return StickMetadata(
         tool_version=tool_version,
-        catalog_version=catalog_version,
+        catalog_version=catalog_ver or catalog_version(),
         created_at=manifest.created_at,
         name=manifest.name,
         persona=manifest.persona.value,
@@ -197,10 +198,3 @@ def metadata_for(
 
 def tool_is_on_path(tool: str) -> bool:
     return shutil.which(tool) is not None
-
-
-def require_root() -> None:
-    if os.geteuid() != 0:
-        # Most operations are delegated to Ventoy/native tools or Docker,
-        # but cryptsetup mount work may need privileges — surface it early.
-        pass

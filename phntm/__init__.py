@@ -11,5 +11,5 @@ __all__ = [
     "compute_budget", "Budget", "format_budget", "overshoot", "usable_capacity",
 ]
 
-__version__ = "1.4.0"
+__version__ = "1.5.0"
 VERSION = __version__

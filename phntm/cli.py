@@ -91,7 +91,7 @@ def cmd_presets() -> None:
                 table.add_row("", *row[1:])
         table.add_section()
     console.print(table)
-    rprint("\nRecommended: [bold]phntm manifest new --persona <name> --tier <gb> --out build.yaml[/]")
+    rprint("\nRecommended: [bold]phntm manifest new --persona <name> --tier <gb> --out build.json[/]")
 
 
 # --------------------------------------------------------------------------- components
@@ -100,6 +100,8 @@ def cmd_components(
     query: str = typer.Argument("", help="free-text filter on id/name"),
     persona: str = typer.Option("", "--persona", "-p", help="filter by persona tag"),
     category: str = typer.Option("", "--category", "-c", help="filter by category"),
+    kind: str = typer.Option("", "--kind", "-k", help="filter by kind: iso | tool | portable | custom"),
+    direct: bool = typer.Option(False, "--direct", help="only components with a direct download link"),
 ) -> None:
     """Browse the component catalog."""
     catalog = load_catalog()
@@ -109,6 +111,8 @@ def cmd_components(
         if (not q or q in e.id or q in e.name.lower())
         and (not persona or persona in {t.value for t in e.persona_tags})
         and (not category or category in e.categories)
+        and (not kind or e.kind == kind)
+        and (not direct or e.download_url)
     ]
     if not rows:
         rprint("[yellow]no components match that filter[/]")
@@ -120,6 +124,7 @@ def cmd_components(
     table.add_column("kind")
     table.add_column("personas")
     table.add_column("categories")
+    table.add_column("dl")
     for e in sorted(rows, key=lambda x: x.id):
         table.add_row(
             e.id,
@@ -128,6 +133,7 @@ def cmd_components(
             e.kind,
             ",".join(p.value for p in e.persona_tags) or "—",
             ",".join(e.categories),
+            "🛰" if e.download_url else "—",
         )
     console.print(table)
 
@@ -264,13 +270,20 @@ def cmd_check(
     verbose: bool = typer.Option(False, "--verbose", "-v", help="show url/size details too"),
 ) -> None:
     """Diff a manifest (or a built stick) against the current catalog."""
-    from .engine.metadata import read_metadata
+    from .engine.metadata import read_metadata_stick
     from .engine.update import diff_pins
     from .models import ComponentPin
 
     catalog = load_catalog()
-    if Path(target).is_dir():
-        pins = read_metadata(target).components
+    target_path = Path(target)
+    # A mount dir or an existing non-file (e.g. /dev/sdX) means "stick".
+    if target_path.is_dir() or (target_path.exists() and not target_path.is_file()):
+        try:
+            meta, _ = read_metadata_stick(target)
+        except FileNotFoundError as exc:
+            rprint(f"[red]{exc}[/]")
+            raise typer.Exit(1)
+        pins = meta.components
         source = f"stick at {target}"
     else:
         manifest = read_manifest(target)
@@ -316,23 +329,31 @@ def cmd_help() -> None:
   phntm tui                        guided: persona → tier → plan → save (TUI)
 
 [b]EXPLORE[/]
-  phntm devices                     see plugged-in sticks + USB version + size
-  phntm presets                     persona × tier matrix (16 presets)
-  phntm components [kw]             browse the catalog [--persona] [--category]
+  phntm devices                     see plugged-in sticks + USB + Ventoy state
+  phntm presets                     persona × tier matrix (14 presets)
+  phntm components [kw]             browse the catalog [--persona] [--category] [--kind] [--direct]
   phntm doctor                      is this machine build-ready?
+  phntm cache                       what's in the offline cache
 
 [b]PLAN[/]
-  phntm manifest new -p <persona> -t <tier> -o build.json    32/64/128 GB
+  phntm manifest new -p <persona> -t <tier> -o build.json    16/32/64/128 GB
   phntm manifest validate -f build.json                      fits? valid?
   phntm build build.json --dry-run                           full plan, safe
+
+[b]OFFLINE ARSENAL[/]
+  phntm fetch --all                                          grab ISOs → ~/.cache/phntm
+  phntm fetch kali-linux hirens-boot-pe                      …or just a few
+  phntm fetch --verify                                       re-check cached files
+  (resumable; sha256-verified when the catalog knows a hash)
 
 [b]BUILD[/]
   phntm build build.json -d auto -y                          single stick = auto-pick
   phntm build build.json -d /dev/sdX -y                      explicit device
-  (builds refuse wrong sizes, wrong personae, missing devices — loudly)
+  (builds refuse wrong sizes, missing devices — loudly; flashes Ventoy, smart upgrade)
 
 [b]AFTER[/]
   phntm status /media/USB                                    what is on the stick?
+  phntm status /dev/sdX                                      same, from the block device
   phntm check build.json                                     is it current vs catalog?
   phntm check /media/USB                                     same, from the stick itself
 
@@ -359,6 +380,11 @@ def cmd_build(
     catalog = load_catalog()
     manifest = read_manifest(file)
     resolve_components(manifest.components, catalog)
+
+    if not dry and not device:
+        rprint("[red]a real build needs a target stick: pass --device /dev/sdX (or -d auto)[/]")
+        rprint("  [yellow]first preview it:[/] [bold]phntm build " + file + " --dry-run[/]")
+        raise typer.Exit(1)
 
     if dry or not device:
         needed = compute_budget(manifest, catalog).used_gb
@@ -421,13 +447,16 @@ def cmd_build(
 @app.command("status")
 def cmd_status(device: str = typer.Argument(..., help="stick mount point or block device")) -> None:
     """Show what a PHNTM-built stick contains."""
+    from .engine.metadata import read_metadata_stick
+
     try:
-        meta = read_metadata(device)
+        meta, meta_path = read_metadata_stick(device)
     except FileNotFoundError as exc:
         rprint(f"[red]{exc}[/]")
         raise typer.Exit(1)
     rprint("[bold]PHNTM stick status[/]")
     rprint(status_snippet(meta))
+    rprint(f"\n  metadata: {meta_path}")
 
 
 # --------------------------------------------------------------------------- update
@@ -456,7 +485,7 @@ def cmd_fetch(
     cache: str = typer.Option("", "--cache", help="cache dir (default ~/.cache/phntm)"),
 ) -> None:
     """Download component files (ISOs) into the local offline cache."""
-    from .engine.fetch import FetchError, fetch, fetch_all, filename_for
+    from .engine.fetch import FetchError, fetch, filename_for
 
     catalog = load_catalog()
     ids: list[str] = []
@@ -481,6 +510,7 @@ def cmd_fetch(
         rprint(f"[bold]phntm fetch[/] — {len(ids)} component(s) → {cache or '~/.cache/phntm'}")
     entries = [catalog[i] for i in ids]
     tty = sys.stdout.isatty()
+    errors: list[str] = []
 
     def _quiet_progress(entry, done: int, total: int | None) -> None:
         if not tty:
@@ -488,42 +518,48 @@ def cmd_fetch(
         pct = f"{done/1024/1024:.0f}/{total/1024/1024:.0f} MiB" if total else f"{done/1024/1024:.0f} MiB"
         print(f"\r  {entry.id:<20} {pct:<28}", end="", flush=True)
 
-    try:
-        if tty:
-            from rich.progress import BarColumn, DownloadColumn, Progress, TextColumn, TransferSpeedColumn
+    results: list = []
+    if tty:
+        from rich.progress import BarColumn, DownloadColumn, Progress, TextColumn, TransferSpeedColumn
 
-            results = []
-            with Progress(
-                TextColumn("{task.description}"),
-                BarColumn(),
-                DownloadColumn(),
-                TransferSpeedColumn(),
-                transient=True,
-            ) as prog:
-                for e in entries:
-                    task = prog.add_task(f"  {e.id}", total=None)
+        with Progress(
+            TextColumn("{task.description}"),
+            BarColumn(),
+            DownloadColumn(),
+            TransferSpeedColumn(),
+            transient=True,
+        ) as prog:
+            for e in entries:
+                task = prog.add_task(f"  {e.id}", total=None)
 
-                    def cb(done: int, total: int | None, task_id=task) -> None:
-                        if total is not None and prog.tasks[task_id].total is None:
-                            prog.update(task_id, total=total)
-                        prog.update(task_id, completed=done)
+                def cb(done: int, total: int | None, task_id=task) -> None:
+                    if total is not None and prog.tasks[task_id].total is None:
+                        prog.update(task_id, total=total)
+                    prog.update(task_id, completed=done)
 
+                try:
                     results.append(fetch(e, cache=cache or None, verify_only=verify, progress=cb))
-        else:
-            results = fetch_all(entries, cache=cache or None, verify_only=verify, progress=_quiet_progress)
-    except FetchError as exc:
-        if tty:
-            print()
-        rprint(f"[red]✘ {exc}[/]")
-        raise typer.Exit(1)
+                except FetchError as exc:
+                    errors.append(str(exc))
+    else:
+        for e in entries:
+            try:
+                results.append(fetch(e, cache=cache or None, verify_only=verify, progress=_quiet_progress))
+            except FetchError as exc:
+                errors.append(str(exc))
     if tty:
         print()
+    for err in errors:
+        rprint(f"[red]✘ {err}[/]")
     for r in results:
         flag = "cached ✔" if not r.fresh else ("verified ✔" if verify else "downloaded ✔")
         checksum = f"sha256 ok" if r.checksum_ok else ("sha256 n/a" if r.checksum_ok is None else "sha256 MISMATCH")
         rprint(f"  [green]{r.entry.id:<20}[/] {flag:<12} {filename_for(r.entry)}  ({r.size/1024/1024:.0f} MiB, {checksum})")
     total_mib = sum(r.size for r in results) / 1024 / 1024
     rprint(f"[bold]done[/] {len(results)} file(s), {total_mib:.0f} MiB in cache. Build stays offline — stick to [bold]phntm build[/].")
+    if errors:
+        rprint(f"[yellow]{len(errors)} of {len(entries)} failed[/] — see above.")
+        raise typer.Exit(1)
 
 
 # --------------------------------------------------------------------------- cache
@@ -561,8 +597,9 @@ def read_manifest(path: str) -> BuildManifest:
         raise typer.Exit(1)
     try:
         return BuildManifest.model_validate(json.loads(p.read_text()))
-    except Exception as exc:  # pydantic ValidationError etc.
-        rprint(f"[red]invalid manifest: {exc}[/]")
+    except Exception as exc:  # pydantic ValidationError et al. — keep the message short
+        first = str(exc).strip().splitlines()[0] if str(exc).strip() else repr(exc)
+        rprint(f"[red]invalid manifest: {first}[/]")
         raise typer.Exit(1)
 
 

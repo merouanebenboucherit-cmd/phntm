@@ -4,6 +4,36 @@ All notable changes to PHNTM are tracked here. Format follows
 [Keep a Changelog](https://keepachangelog.com/); versioning follows
 [SemVer](https://semver.org/).
 
+## [1.5.0] — known your stick 👻📡
+**PHNTM now talks to the stick itself.** `phntm status` and `phntm check` accept a raw
+block device (`/dev/sdX`) — PHNTM finds the mounted volume via `lsblk` and reads
+`phntm.json` wherever the stick is plugged in. Anything that isn't a PHNTM stick gets
+a clear one-liner, never a traceback.
+
+### Added
+- **Stick-aware metadata**: `phntm status /dev/sdX` and `phntm check /dev/sdX` work
+  (mount folder support kept, of course); missing `phntm.json` → clean error
+- **`phntm fetch` keeps going**: one broken component no longer aborts the batch —
+  the rest download, every failure is reported, and the command still exits `1`
+  (script-friendly)
+- **`phntm build` refuses to half-build**: `--no-dry-run` without `--device` now
+  errors with a pointer instead of silently degrading to a plan
+- **Catalog browsing filters**: `phntm components --kind iso|tool|portable|custom`
+  and `--direct` (only components with a download link on record)
+- **Real version stamps**: built sticks now record the actual tool version and the
+  real catalog version in `phntm.json` (they were placeholders — `1.0.0` /
+  hardcoded — before)
+
+### Internal
+- dropped dead `require_root()`; metadata reader split (`read_metadata` vs
+  `read_metadata_stick`); manifest-error output trimmed to one line
+
+### Tests
+`read_metadata_stick` (mount dir, block-device lookup via `lsblk`, clean failure),
+CLI status/check/build/fetch/help/components behavior, and a presets data-integrity
+suite (all 14 presets validate, resolve against the catalog, fit their tier) —
+**103 total**, green on Python 3.11/3.12/3.13.
+
 ## [1.4.0] — real build driver 👻🚗
 **`phntm build -d /dev/sdX --yes` now does something real.** The Ventoy step is wired:
 it detects whether the stick already carries Ventoy (root-free, via partition labels)
