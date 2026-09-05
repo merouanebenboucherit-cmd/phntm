@@ -108,11 +108,11 @@ def dry_run(manifest: BuildManifest, catalog: Dict[str, CatalogEntry]) -> str:
     return "\n".join(out)
 
 
-def _device_ok(device: str) -> None:
+def _device_ok(device: str, sysfs_root: str = "/sys") -> None:
     if not os.path.exists(device):
         raise BuildError(f"device '{device}' does not exist — plug in the USB stick first")
     # Removable check: sysfs is authoritative on Linux.
-    sysfs = f"/sys/block/{os.path.basename(device)}/removable"
+    sysfs = os.path.join(sysfs_root, "block", os.path.basename(device), "removable")
     if os.path.exists(sysfs):
         try:
             if int(open(sysfs).read().strip()) == 0:
@@ -123,15 +123,23 @@ def _device_ok(device: str) -> None:
             pass
 
 
+def _ventoy_driver(device: str):
+    """Lazy import keeps build.py ↔ ventoy.py free of circular imports."""
+    from .ventoy import install_ventoy
+
+    return lambda: install_ventoy(device)
+
+
 def run_build(
     manifest: BuildManifest,
     catalog: Dict[str, CatalogEntry],
     device: str,
     *,
     yes: bool = False,
+    sysfs_root: str = "/sys",
 ) -> StickMetadata:
     """Execute the real build. Every destructive action is gated on --yes."""
-    _device_ok(device)
+    _device_ok(device, sysfs_root)
     if not yes:
         raise BuildError(
             f"destructive build on '{device}' requires --yes (the whole stick gets reformatted). "
@@ -142,9 +150,16 @@ def run_build(
     for step in steps:
         if step.optional:
             continue
+        if step.id == "concede":
+            print(f"  ✓ stick {device} confirmed — every byte on it will be wiped")
+            continue
+        if step.id == "ventoy":
+            _ventoy_driver(device)()  # flashes or upgrades Ventoy, idempotently
+            continue
         if step.command is None:
             raise BuildError(
-                f"step '{step.id}' has no driver attached yet."
+                f"step '{step.id}' has no driver attached yet — Ventoy is flashed; "
+                "the copy layer lands in a later release."
             )
         step.command()
 

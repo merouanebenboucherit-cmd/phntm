@@ -217,10 +217,21 @@ def cmd_manifest(
 # --------------------------------------------------------------------------- devices
 @app.command("devices")
 def cmd_devices() -> None:
-    """Detect plugged-in USB sticks: size, USB version, model."""
+    """Detect plugged-in USB sticks: size, USB version, model, Ventoy state."""
     from .engine.devices import scan_devices
+    from .engine.ventoy import VentoyTool
 
     sticks = scan_devices()
+    ventoy = VentoyTool.detect()
+
+    def _ventoy_state(path: str) -> str:
+        if ventoy.mode == "none":
+            return "n/a"
+        try:
+            return "installed ✅" if ventoy.installed_on(path) else "not yet"
+        except Exception:
+            return "?"
+
     if not sticks:
         rprint("[yellow]No removable USB stick detected.[/]")
         rprint("  Plug one in and run again — or build with ")
@@ -230,6 +241,7 @@ def cmd_devices() -> None:
     table.add_column("device", style="green", no_wrap=True)
     table.add_column("capacity", justify="right", style="bold")
     table.add_column("usb")
+    table.add_column("ventoy")
     table.add_column("model")
     table.add_column("vendor")
     for s in sticks:
@@ -237,6 +249,7 @@ def cmd_devices() -> None:
             s.path,
             s.human_size(),
             s.usb.speed_label if s.usb else "unknown",
+            _ventoy_state(s.path),
             s.model or "—",
             (s.usb.vendor or s.vendor or "—").strip(),
         )
@@ -443,7 +456,7 @@ def cmd_fetch(
     cache: str = typer.Option("", "--cache", help="cache dir (default ~/.cache/phntm)"),
 ) -> None:
     """Download component files (ISOs) into the local offline cache."""
-    from .engine.fetch import FetchError, fetch_all, filename_for
+    from .engine.fetch import FetchError, fetch, fetch_all, filename_for
 
     catalog = load_catalog()
     ids: list[str] = []
@@ -467,30 +480,50 @@ def cmd_fetch(
     else:
         rprint(f"[bold]phntm fetch[/] — {len(ids)} component(s) → {cache or '~/.cache/phntm'}")
     entries = [catalog[i] for i in ids]
+    tty = sys.stdout.isatty()
 
-    def _progress_line(entry, done: int, total: int | None) -> None:
-        if not sys.stdout.isatty():
+    def _quiet_progress(entry, done: int, total: int | None) -> None:
+        if not tty:
             return
         pct = f"{done/1024/1024:.0f}/{total/1024/1024:.0f} MiB" if total else f"{done/1024/1024:.0f} MiB"
         print(f"\r  {entry.id:<20} {pct:<28}", end="", flush=True)
 
-    ok = []
     try:
-        results = fetch_all(entries, cache=cache or None, verify_only=verify, progress=_progress_line)
+        if tty:
+            from rich.progress import BarColumn, DownloadColumn, Progress, TextColumn, TransferSpeedColumn
+
+            results = []
+            with Progress(
+                TextColumn("{task.description}"),
+                BarColumn(),
+                DownloadColumn(),
+                TransferSpeedColumn(),
+                transient=True,
+            ) as prog:
+                for e in entries:
+                    task = prog.add_task(f"  {e.id}", total=None)
+
+                    def cb(done: int, total: int | None, task_id=task) -> None:
+                        if total is not None and prog.tasks[task_id].total is None:
+                            prog.update(task_id, total=total)
+                        prog.update(task_id, completed=done)
+
+                    results.append(fetch(e, cache=cache or None, verify_only=verify, progress=cb))
+        else:
+            results = fetch_all(entries, cache=cache or None, verify_only=verify, progress=_quiet_progress)
     except FetchError as exc:
-        if sys.stdout.isatty():
+        if tty:
             print()
         rprint(f"[red]✘ {exc}[/]")
         raise typer.Exit(1)
-    if sys.stdout.isatty():
+    if tty:
         print()
     for r in results:
         flag = "cached ✔" if not r.fresh else ("verified ✔" if verify else "downloaded ✔")
         checksum = f"sha256 ok" if r.checksum_ok else ("sha256 n/a" if r.checksum_ok is None else "sha256 MISMATCH")
         rprint(f"  [green]{r.entry.id:<20}[/] {flag:<12} {filename_for(r.entry)}  ({r.size/1024/1024:.0f} MiB, {checksum})")
-        ok.append(r)
-    total_mib = sum(r.size for r in ok) / 1024 / 1024
-    rprint(f"[bold]done[/] {len(ok)} file(s), {total_mib:.0f} MiB in cache. Build stays offline — stick to [bold]phntm build[/].")
+    total_mib = sum(r.size for r in results) / 1024 / 1024
+    rprint(f"[bold]done[/] {len(results)} file(s), {total_mib:.0f} MiB in cache. Build stays offline — stick to [bold]phntm build[/].")
 
 
 # --------------------------------------------------------------------------- cache

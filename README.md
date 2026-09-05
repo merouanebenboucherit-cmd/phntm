@@ -60,7 +60,7 @@ persona → tier → tune → save   uncheck an ISO/tool or toggle LUKS persiste
 - **The size engine** — PHNTM computes the real budget (ISOs + persistence + vault + drop) against the stick's usable capacity and *refuses lies*.
 - **sha256 everywhere** — nothing lands on a stick unverified.
 - **No-sudo flashing** — Ventoy native **or** Docker fallback. Works on this very workstation.
-- **Sees your stick** — `phntm devices` reads size, USB 2.0/3.0/3.1/3.2 speed, vendor/model straight from sysfs; `build -d auto` picks the single plugged stick and refuses sticks that physically can't hold the plan.
+   |`phntm devices` reads size, USB 2.0/3.0/3.1/3.2 speed, vendor/model straight from sysfs, plus Ventoy install state; `build -d auto` picks the single plugged stick and refuses sticks that physically can't hold the plan.
 - **Your stick, your rules** — encrypted VAULT (cryptsetup/LUKS), LUKS persistence for Kali, DROP scratch folder. Nothing auto-runs. No phoning home.
 
 ## Install
@@ -80,7 +80,7 @@ pip install "phntm[tui]"
 
 ```bash
 phntm tui                                            # ✨ the wizard: persona → tier → plan
-phntm devices                                        # detect stick: size + USB 2.0/3.0 + model
+phntm devices                                        # detect stick: size + USB + Ventoy state
 phntm presets                                        # browse personas × tiers
 phntm doctor                                         # is this machine build-ready?
 phntm fetch --all                                    # 🛰 grab ISOs into ~/.cache/phntm (resumable, sha256-verified)
@@ -98,13 +98,13 @@ phntm update                                         # catalog status
 | Command | What it does |
 |---|---|
 | `phntm tui` | **guided wizard** — persona → tier → tune components → live-meter plan |
-| `phntm devices` | detect plugged-in sticks: size, USB speed, vendor/model |
+| `phntm devices` | detect plugged-in sticks: size, USB speed, vendor/model, Ventoy state |
 | `phntm presets` | persona × tier matrix — 16 presets with estimated sizes |
 | `phntm components [kw]` | browse the catalog (`--persona`, `--category`) |
 | `phntm manifest new -p <persona> -t <tier> -o f.json` | create a build manifest |
 | `phntm manifest validate -f f.json` | sanity + fits-on-stick check |
 | `phntm build f.json --dry-run` | full plan, zero side effects |
-| `phntm build f.json -d auto -y` | real build (refuses wrong-size/wrong-category sticks) |
+| `phntm build f.json -d auto -y` | real build — flashes Ventoy for real (smart upgrade), halts before the copy layer |
 | `phntm status /media/USB` | what a PHNTM stick contains |
 | `phntm check <manifest-or-stick>` | freshness diff vs catalog |
 | `phntm update` | catalog status |
@@ -126,11 +126,12 @@ VENTOY          bootloader  (any FAT/EXFAT/NTFS/x86 ISO boots)
 
 ## Status
 
-`1.3.0`
+`1.4.0`
 
 - **Core ✅** manifest engine, catalog (25 components), 16 presets, budget engine, device detection, CLI
 - **Wizard ✅** Textual TUI — persona → tier → tune components + live size meter
-- **Fetch ✅** `phntm fetch` — real ISOs into an offline cache, resumable + sha256-verified (70 tests)
+- **Fetch ✅** `phntm fetch` — real ISOs into an offline cache, resumable + sha256-verified
+- **Build driver ✅** `phntm build … --yes` flashes Ventoy for real (upgrades smartly when the stick already has it) — 89 tests
 
 follow for more
 

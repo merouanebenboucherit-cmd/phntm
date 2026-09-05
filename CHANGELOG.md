@@ -4,6 +4,33 @@ All notable changes to PHNTM are tracked here. Format follows
 [Keep a Changelog](https://keepachangelog.com/); versioning follows
 [SemVer](https://semver.org/).
 
+## [1.4.0] — real build driver 👻🚗
+**`phntm build -d /dev/sdX --yes` now does something real.** The Ventoy step is wired:
+it detects whether the stick already carries Ventoy (root-free, via partition labels)
+and flashes, upgrades, or force-reinstalls accordingly — then halts with a clear note
+until the copy layer lands.
+
+### Added
+- **Ventoy install driver finished**: native `Ventoy2Disk.sh` or the Docker fallback, idempotent
+  - already Ventoy → **upgrade in place** (`-u`, keeps your data partition)
+  - already Ventoy + `--force` → reinstall (`-I`)
+  - blank stick → fresh install (`-i`)
+- **Stick-level Ventoy detection** — `phntm devices` gains a `ventoy` column (installed ✅ / not yet),
+  via `lsblk` partition labels, no root needed
+- Native Ventoy version shows up in `phntm doctor`
+- `phntm fetch` gets **live progress bars** on a terminal (bar + downloaded + transfer speed);
+  quiet line mode when piped
+- Real-build pipeline tests: concede → ventoy flash → clean halt before the copy layer
+
+### Fixed
+- `build` no longer bails on the *first* step — the ventoy step runs for real before the
+  not-yet-wired copy layer steps report themselves
+
+### Tests
+`test_ventoy.py` grown from 3 → 16 (install/upgrade/force flag selection, lsblk parsing,
+failure fallbacks, version sniffing) + new `test_build.py` (real-run pipeline) — **89 total**,
+green on Python 3.11/3.12/3.13.
+
 ## [1.3.0] — offline arsenal 👻📦
 **Offline anything — you can finally get real ISOs onto a stick.** PHNTM now downloads
 component files into a local offline cache; builds stay fully offline by design.
