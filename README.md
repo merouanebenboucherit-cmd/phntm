@@ -20,9 +20,9 @@
                                        (+128 GB BANSHEE for GENERAL)
 ```
 
-## Concept art
+## Concept 
 
-AI-generated concept art of the PHNTM idea (prompts in [`brand/IDEA_BRIEF.md`](brand/IDEA_BRIEF.md),
+concept art of the PHNTM idea (prompts in [`brand/IDEA_BRIEF.md`](brand/IDEA_BRIEF.md),
 originals in `brand/*-ai.png`):
 
 <p align="center">
@@ -91,7 +91,7 @@ VENTOY          bootloader  (any FAT/EXFAT/NTFS/x86 ISO boots)
 
 `1.0.0` — M1 core: manifest engine, catalog, 16 presets, budget engine, device detection, CLI, 50 tests.
 M2 = Textual TUI, M3 = hardware drivers (Ventoy/persist/vault/QEMU), M4 = updates + offline bundles.
-
+follow for more
 ## Project files
 
 - [CHANGELOG.md](CHANGELOG.md) — release history
