@@ -165,3 +165,17 @@ def test_update_is_honest_about_offline():
     result = run("update")
     assert result.exit_code == 0
     assert "local" in result.stdout.lower() or "bundled" in result.stdout.lower()
+
+def test_fetch_unknown_component():
+    result = run("fetch", "no-such-thing")
+    assert result.exit_code == 1
+    assert "unknown component" in result.stdout
+
+
+def test_fetch_tty_progress_branch_cleans_up_on_missing(monkeypatch, tmp_path):
+    # Drive the rich Progress (TTY) code path; empty cache → first entry fails,
+    # which must unwind the progress bars cleanly and report the error.
+    monkeypatch.setattr("sys.stdout.isatty", lambda: True)
+    result = run("fetch", "--verify", "--all", "--cache", str(tmp_path))
+    assert result.exit_code == 1
+    assert "not cached" in result.stdout
