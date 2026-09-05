@@ -1,0 +1,169 @@
+{
+  "presetVersion": 1,
+  "personas": {
+    "it": {
+      "label": "IT Tech",
+      "emoji": "🛠️",
+      "recommended_tier": 32,
+      "description": "Repair, rescue, and reinstall anything. Windows + Linux recovery in one stick.",
+      "tiers": {
+        "16": {
+          "name": "IT GHOST-16",
+          "components": [
+            "hirens-boot-pe", "systemrescue", "gparted-live", "memtest86plus",
+            "supergrub2", "clonezilla-live", "freedos", "sysinternals-suite", "phntm-tools"
+          ],
+          "vault_gb": 2.0, "drop_gb": 1.0, "persist_gb": 0.0
+        },
+        "32": {
+          "name": "IT SPECTRE-32",
+          "components": [
+            "hirens-boot-pe", "systemrescue", "gparted-live", "memtest86plus",
+            "supergrub2", "clonezilla-live", "resquezilla", "freedos",
+            "windows-11", "sysinternals-suite", "unshackle", "phntm-tools"
+          ],
+          "vault_gb": 4.0, "drop_gb": 2.0, "persist_gb": 0.0
+        },
+        "64": {
+          "name": "IT PHANTOM-64",
+          "components": [
+            "hirens-boot-pe", "systemrescue", "gparted-live", "memtest86plus",
+            "supergrub2", "clonezilla-live", "resquezilla", "freedos",
+            "windows-11", "sysinternals-suite", "unshackle", "tails",
+            "tor-browser", "nmap-portable", "phntm-tools"
+          ],
+          "vault_gb": 10.0, "drop_gb": 4.0, "persist_gb": 0.0
+        }
+      }
+    },
+    "pentest": {
+      "label": "Pentester",
+      "emoji": "🎯",
+      "recommended_tier": 32,
+      "description": "Offensive tooling, wordlists, and persistent Kali for engagements.",
+      "tiers": {
+        "16": {
+          "name": "PENT GHOST-16",
+          "components": [
+            "kali-linux", "nmap-portable", "payloadsallthethings", "seclists",
+            "memtest86plus", "supergrub2", "phntm-tools"
+          ],
+          "vault_gb": 2.0, "drop_gb": 1.0, "persist_gb": 0.0
+        },
+        "32": {
+          "name": "PENT SPECTRE-32",
+          "components": [
+            "kali-linux", "blackarch-live", "nmap-portable", "payloadsallthethings",
+            "seclists", "memtest86plus", "supergrub2", "phntm-tools"
+          ],
+          "vault_gb": 4.0, "drop_gb": 2.0, "persist_gb": 6.0
+        },
+        "64": {
+          "name": "PENT PHANTOM-64",
+          "components": [
+            "kali-linux", "blackarch-live", "parrot-security", "nmap-portable",
+            "payloadsallthethings", "seclists", "memtest86plus", "supergrub2",
+            "tails", "tor-browser", "phntm-tools"
+          ],
+          "vault_gb": 10.0, "drop_gb": 4.0, "persist_gb": 10.0
+        }
+      }
+    },
+    "dfir": {
+      "label": "DFIR Analyst",
+      "emoji": "🔍",
+      "recommended_tier": 32,
+      "description": "Imaging, triage, memory forensics, and evidence handling.",
+      "tiers": {
+        "16": {
+          "name": "DFIR GHOST-16",
+          "components": [
+            "winfe", "unshackle", "velociraptor-agents", "volatility3",
+            "supergrub2", "phntm-tools"
+          ],
+          "vault_gb": 2.0, "drop_gb": 1.0, "persist_gb": 0.0
+        },
+        "32": {
+          "name": "DFIR SPECTRE-32",
+          "components": [
+            "winfe", "hirens-boot-pe", "unshackle", "velociraptor-agents",
+            "volatility3", "seclists", "clonezilla-live", "resquezilla",
+            "gparted-live", "sysinternals-suite", "supergrub2", "phntm-tools"
+          ],
+          "vault_gb": 4.0, "drop_gb": 2.0, "persist_gb": 0.0
+        },
+        "64": {
+          "name": "DFIR PHANTOM-64",
+          "components": [
+            "winfe", "hirens-boot-pe", "parrot-security", "unshackle",
+            "velociraptor-agents", "volatility3", "seclists", "clonezilla-live",
+            "resquezilla", "gparted-live", "sysinternals-suite", "supergrub2",
+            "memtest86plus", "phntm-tools"
+          ],
+          "vault_gb": 10.0, "drop_gb": 4.0, "persist_gb": 0.0
+        }
+      }
+    },
+    "privacy": {
+      "label": "Privacy User",
+      "emoji": "🕶️",
+      "recommended_tier": 32,
+      "description": "Daily privacy, compartmentalisation, and safe browsing.",
+      "tiers": {
+        "16": {
+          "name": "PRIV GHOST-16",
+          "components": [
+            "tails", "whonix-workstation", "tor-browser", "supergrub2", "phntm-tools"
+          ],
+          "vault_gb": 2.0, "drop_gb": 1.0, "persist_gb": 0.0
+        },
+        "32": {
+          "name": "PRIV SPECTRE-32",
+          "components": [
+            "tails", "whonix-workstation", "qubes-live", "tor-browser",
+            "systemrescue", "memtest86plus", "supergrub2", "phntm-tools"
+          ],
+          "vault_gb": 4.0, "drop_gb": 2.0, "persist_gb": 0.0
+        },
+        "64": {
+          "name": "PRIV PHANTOM-64",
+          "components": [
+            "tails", "whonix-workstation", "qubes-live", "tor-browser",
+            "systemrescue", "gparted-live", "memtest86plus", "supergrub2",
+            "phntm-tools"
+          ],
+          "vault_gb": 10.0, "drop_gb": 4.0, "persist_gb": 0.0
+        }
+      }
+    },
+    "general": {
+      "label": "General Mix",
+      "emoji": "🧰",
+      "recommended_tier": 64,
+      "description": "The everything stick — best of all worlds when size allows.",
+      "tiers": {
+        "64": {
+          "name": "GEN PHANTOM-64",
+          "components": [
+            "kali-linux", "tails", "hirens-boot-pe", "systemrescue", "gparted-live",
+            "memtest86plus", "supergrub2", "clonezilla-live", "windows-11",
+            "sysinternals-suite", "seclists", "nmap-portable", "phntm-tools"
+          ],
+          "vault_gb": 10.0, "drop_gb": 4.0, "persist_gb": 6.0
+        },
+        "128": {
+          "name": "GEN BANSHEE-128",
+          "components": [
+            "kali-linux", "blackarch-live", "parrot-security", "tails",
+            "whonix-workstation", "qubes-live", "hirens-boot-pe", "systemrescue",
+            "gparted-live", "memtest86plus", "supergrub2", "clonezilla-live",
+            "resquezilla", "windows-11", "sysinternals-suite", "unshackle",
+            "velociraptor-agents", "volatility3", "seclists", "payloadsallthethings",
+            "nmap-portable", "tor-browser", "phntm-tools"
+          ],
+          "vault_gb": 16.0, "drop_gb": 8.0, "persist_gb": 12.0
+        }
+      }
+    }
+  }
+}

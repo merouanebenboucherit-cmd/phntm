@@ -1,0 +1,56 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "phntm"
+version = "1.0.0"
+description = "PHNTM — build legendary USB sticks for IT, Pentest, DFIR and Privacy personas. Local-first, open source, zero telemetry."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "PHNTM contributors" }]
+keywords = ["usb", "ventoy", "pentest", "dfir", "forensics", "privacy", "live-usb"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: System :: Boot",
+    "Topic :: System :: Systems Administration",
+    "Topic :: Security",
+]
+dependencies = [
+    "pydantic>=2.5",
+    "typer>=0.9",
+    "rich>=13.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/merouanebenboucherit-cmd/phntm"
+Repository = "https://github.com/merouanebenboucherit-cmd/phntm"
+Issues = "https://github.com/merouanebenboucherit-cmd/phntm/issues"
+Changelog = "https://github.com/merouanebenboucherit-cmd/phntm/blob/main/CHANGELOG.md"
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "pytest-cov>=4.0"]
+tui = ["textual>=0.60"]
+
+[project.scripts]
+phntm = "phntm.cli:app"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["phntm*"]
+
+[tool.setuptools.package-data]
+phntm = ["data/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

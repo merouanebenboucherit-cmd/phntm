@@ -1,0 +1,24 @@
+{
+  "manifestVersion": 1,
+  "name": "PHNTM DFIR SPECTRE-32",
+  "persona": "dfir",
+  "tier": 32,
+  "components": [
+    "winfe",
+    "hirens-boot-pe",
+    "unshackle",
+    "velociraptor-agents",
+    "volatility3",
+    "seclists",
+    "clonezilla-live",
+    "resquezilla",
+    "gparted-live",
+    "sysinternals-suite",
+    "supergrub2",
+    "phntm-tools"
+  ],
+  "persistence": { "enabled": false, "size_gb": 0 },
+  "vault_gb": 4,
+  "drop_gb": 2,
+  "theme": "minimal-dark"
+}
