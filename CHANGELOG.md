@@ -4,6 +4,40 @@ All notable changes to PHNTM are tracked here. Format follows
 [Keep a Changelog](https://keepachangelog.com/); versioning follows
 [SemVer](https://semver.org/).
 
+## [1.7.0] — the ghost stick materializes 👻📦
+**`phntm build` no longer stops at Ventoy.** After flashing and mounting, the
+build stages the entire stick — real directories, real containers, real scripts —
+and tells you honestly what landed and what didn't.
+
+### Added
+- **Copy layer** (`phntm/engine/copy.py`) — everything the stick needs, written
+  unprivileged into the mounted data partition:
+  - `ISOS/` + `TOOLS/` — components streamed from `~/.cache/phntm` with sha256
+    verification on arrival (mismatch = rejected + cleaned up; uncached = skipped
+    and reported, never fatal)
+  - `SETUP/` — `phntm-about.txt`, `disk-info.sh`, `router-creds.sh` (executable),
+    `vault.txt` (honest LUKS key note: guards against reviewers, not thieves)
+  - `VAULT/` — `phntm-vault.img` LUKS container (`cryptsetup luksFormat`, random
+    32-byte hex key, chmod 600), created only when `cryptsetup` is installed
+  - `PERSIST/` — sparse `phntm-persist.img` + `mkfs.ext4` as configured
+  - `DROP/`, `ventoy/ventoy.json` (theme + persistence plugin → PERSIST/)
+- **Build orchestration** — `run_build` walks the full plan: concede → ventoy →
+  mount → per-part copy stages → `phntm.json`. Mount resolves by polling
+  `lsblk` (skips Ventoy/EFI mounts); `--mount <dir>` is honored as a fallback
+  when auto-mount fails. Returns `(StickMetadata, BuildReport)`.
+- **BuildReport** — `copied` (component → dest), `missing`, `skipped`, `errors`,
+  `setup_scripts`, `ok`, `snapshot()`, `summary()`; the CLI prints it after a
+  real build.
+- `phntm build --cache <dir>` — point the copy stage at a non-default cache
+  (dry-run's "not yet cached" list respects it too).
+
+### Tests
+Full suite now **118 green** (was 103): copy-layer tests (staging, sha256
+rejection, missing-cache, parts filter, vault/persist tool gates, mount polling
++ Ventoy/EFI skip), build-orchestration tests (full run order, mount failure,
+`--mount` fallback, hint ignored when auto-mount works), and the CLI
+`check`/`status` width-robustness fix.
+
 ## [1.6.0] — show it to the world 👻🎞️
 **A review section people can trust.** Every screenshot in the README is a real
 byte-for-byte terminal capture — regenerated on demand, never mocked.

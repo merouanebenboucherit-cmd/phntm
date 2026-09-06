@@ -5,12 +5,14 @@ from __future__ import annotations
 import os
 import shutil
 from dataclasses import dataclass
-from typing import Callable, Dict, List
+from pathlib import Path
+from typing import Callable, Dict, List, Tuple
 
 from .. import VERSION
 from ..catalog import catalog_version
 from ..models import BuildManifest, CatalogEntry, StickMetadata
 from ..sizer import compute_budget
+from .copy import BuildReport, mount_root_for, run_copy_layer
 
 
 class BuildError(RuntimeError):
@@ -45,7 +47,7 @@ def compose_steps(manifest: BuildManifest, catalog: Dict[str, CatalogEntry]) -> 
     steps: List[BuildStep] = [
         BuildStep("concede", "Confirm stick identity & data-loss warning", requires_hardware=True),
         BuildStep("ventoy", "Install Ventoy (native or Docker — no sudo needed)", requires_hardware=True),
-        BuildStep("partition", "Create exFAT data partition layout", requires_hardware=True),
+        BuildStep("mount", "Mount the exFAT data partition (Ventoy layout)", requires_hardware=True),
         BuildStep(
             "isos",
             "Stage ISOs → ISOS/ (sha256 verified, Ventoy-compatible)",
@@ -53,7 +55,12 @@ def compose_steps(manifest: BuildManifest, catalog: Dict[str, CatalogEntry]) -> 
         ),
         BuildStep(
             "tools",
-            "Copy portable tools layer → TOOLS/ (incl. PHNTM scripts)",
+            "Copy portable tools layer → TOOLS/",
+            requires_hardware=True,
+        ),
+        BuildStep(
+            "setup",
+            "Write SETUP/ helper scripts + per-stick documentation",
             requires_hardware=True,
         ),
     ]
@@ -71,7 +78,7 @@ def compose_steps(manifest: BuildManifest, catalog: Dict[str, CatalogEntry]) -> 
         steps.append(
             BuildStep(
                 "vault",
-                f"Create encrypted VAULT volume ({manifest.vault_gb:.0f}GB, cryptsetup/LUKS)",
+                f"Create encrypted VAULT container ({manifest.vault_gb:.0f}GB, cryptsetup/LUKS)",
                 requires_hardware=True,
             )
         )
@@ -85,7 +92,11 @@ def compose_steps(manifest: BuildManifest, catalog: Dict[str, CatalogEntry]) -> 
         )
 
     steps += [
-        BuildStep("theme", "Write ventoy.json theme + boot-menu customization", requires_hardware=False),
+        BuildStep(
+            "theme",
+            "Write ventoy.json theme + persistence plugin config",
+            requires_hardware=True,
+        ),
         BuildStep("metadata", "Write phntm.json stick metadata", requires_hardware=True),
         BuildStep("test", "QEMU boot-test the physical stick", requires_hardware=True, optional=True),
     ]
@@ -138,8 +149,19 @@ def run_build(
     *,
     yes: bool = False,
     sysfs_root: str = "/sys",
-) -> StickMetadata:
-    """Execute the real build. Every destructive action is gated on --yes."""
+    cache: str | os.PathLike | None = None,
+    mount_hint: str | os.PathLike | None = None,
+) -> Tuple[StickMetadata, "BuildReport"]:
+    """Execute the real build. Every destructive action is gated on --yes.
+
+    ``mount_hint``: fallback directory to stage into when the flashed stick's
+    data partition never auto-mounts (user already has it mounted manually).
+
+    Returns ``(stick_metadata, copy_report)`` — the copy report is the honest
+    tally of what actually landed on the stick (see phntm/engine/copy.py).
+    """
+    from .metadata import write_metadata
+
     _device_ok(device, sysfs_root)
     if not yes:
         raise BuildError(
@@ -147,24 +169,57 @@ def run_build(
             "Run with --dry-run first to review the plan."
         )
 
+    def copy(parts):
+        run_copy_layer(
+            manifest, catalog, mount_root, parts=parts, report=report, verify=True, cache=cache
+        )
+
     steps = compose_steps(manifest, catalog)
+    report = BuildReport()
+    mount_root: str | None = None
+    meta = metadata_for(manifest, catalog, tool_version=VERSION)
+
     for step in steps:
         if step.optional:
             continue
         if step.id == "concede":
             print(f"  ✓ stick {device} confirmed — every byte on it will be wiped")
-            continue
-        if step.id == "ventoy":
-            _ventoy_driver(device)()  # flashes or upgrades Ventoy, idempotently
-            continue
-        if step.command is None:
-            raise BuildError(
-                f"step '{step.id}' has no driver attached yet — Ventoy is flashed; "
-                "the copy layer lands in a later release."
-            )
-        step.command()
+        elif step.id == "ventoy":
+            _ventoy_driver(device)()
+        elif step.id == "mount":
+            mount_root = mount_root_for(device)
+            if not mount_root and mount_hint is not None:
+                hinted = Path(mount_hint)
+                if hinted.is_dir():
+                    mount_root = hinted
+            if not mount_root:
+                raise BuildError(
+                    f"'{device}' finished flashing but its data partition never mounted. "
+                    "Plug it into a desktop, copy data off, and try again — or pass --mount <dir>."
+                )
+            report.mount_root = mount_root
+            print(f"  ✓ data partition mounted at {mount_root}")
+        elif step.id == "isos":
+            copy(["isos"])
+        elif step.id == "tools":
+            copy(["tools"])
+        elif step.id == "setup":
+            copy(["setup"])
+        elif step.id == "persist":
+            copy(["persist"])
+        elif step.id == "vault":
+            copy(["vault"])
+        elif step.id == "drop":
+            copy(["drop"])
+        elif step.id == "theme":
+            copy(["theme"])
+        elif step.id == "metadata":
+            path = write_metadata(mount_root, meta)
+            print(f"  ✓ phntm.json written to {path}")
+        else:
+            raise BuildError(f"step '{step.id}' has no driver attached yet")
 
-    return metadata_for(manifest, catalog, tool_version=VERSION)
+    return meta, report
 
 
 def metadata_for(

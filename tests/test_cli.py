@@ -218,7 +218,9 @@ def test_check_on_stick_dir(tmp_path):
     write_metadata(tmp_path, metadata_for(manifest, catalog))
     result = run("check", str(tmp_path))
     assert result.exit_code == 0, result.stdout
-    assert "vs catalog" in result.stdout
+    # rich wraps long paths, so don't assert on the "… vs catalog" split
+    assert "catalog-2026.09" in result.stdout.replace("\n", " ")
+    assert "Fully current" in result.stdout
 
 
 def test_components_kind_and_direct_filters():

@@ -16,7 +16,7 @@ from rich.table import Table
 from . import VERSION
 from .catalog import load_catalog, catalog_version, resolve_components
 from .engine.build import compose_steps, dry_run, run_build, BuildError
-from .engine.metadata import read_metadata, status_snippet, write_metadata
+from .engine.metadata import read_metadata, status_snippet
 from .models import BuildManifest, Persona
 from .presets import (
     available_personas,
@@ -371,12 +371,14 @@ def cmd_build(
     file: str = typer.Argument(..., help="manifest json file"),
     dry: bool = typer.Option(True, "--dry-run/--no-dry-run", help="plan-only (default) or execute"),
     device: str = typer.Option("", "--device", "-d", help="/dev/sdX, or auto to pick the single stick"),
-    mount: str = typer.Option("", "--mount", "-m", help="stick mount point (for phntm.json)"),
+    mount: str = typer.Option("", "--mount", "-m", help="stick mount point (fallback if auto-mount fails)"),
+    cache: str = typer.Option("", "--cache", help="cache dir (default ~/.cache/phntm)"),
     yes: bool = typer.Option(False, "--yes", "-y", help="confirm destructive build"),
 ) -> None:
     """Plan (dry-run) or execute a real build from a manifest."""
     from .engine.devices import device_capacity, resolve_device, scan_devices
 
+    cache = cache or None
     catalog = load_catalog()
     manifest = read_manifest(file)
     resolve_components(manifest.components, catalog)
@@ -393,7 +395,7 @@ def cmd_build(
         # Offline-first: tell the user what the manifest still needs fetched.
         from .engine.fetch import list_cache
 
-        have = list_cache()
+        have = list_cache(cache) if cache else list_cache()
         missing = sorted(
             catalog[c].id for c in manifest.components
             if catalog[c].kind == "iso" and c not in have
@@ -426,15 +428,17 @@ def cmd_build(
                 "Raise the tier or shrink vault/drop/components.[/]"
             )
             raise typer.Exit(1)
-        meta = run_build(manifest, catalog, resolved, yes=yes)
-        if mount:
-            path = write_metadata(mount, meta)
-            rprint(f"[green]✔ build complete — metadata at {path}[/]")
+        meta, report = run_build(
+            manifest, catalog, resolved, yes=yes, cache=cache, mount_hint=mount or None
+        )
+        rprint("[green]✔ build complete[/] — the stick is now a PHNTM ghost stick:")
+        rprint(report.summary())
+        rprint("  metadata (phntm.json) written by the build itself.")
+        if report.missing:
+            rprint("[yellow]hint:[/] stage the missing components later with "
+                   "[bold]phntm fetch <id>[/] (they'll slot into ISOS//TOOLS/ on rebuild)")
         else:
-            rprint("[green]✔ build complete. Mount the stick, then:")
-            rprint("    [bold]phntm status /media/USB[/]   after running")
-            rprint("    [bold]phntm check /media/USB[/]    to track catalog freshness")
-            rprint("    to record stick metadata.")
+            rprint("  next: plug into a target and boot — Ventoy handles the rest.")
     except BuildError as exc:
         rprint(f"[red]✘ {exc}[/]")
         raise typer.Exit(1)

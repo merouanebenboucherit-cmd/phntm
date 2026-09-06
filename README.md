@@ -8,7 +8,7 @@
   <img src="https://github.com/merouanebenboucherit-cmd/phntm/actions/workflows/ci.yml/badge.svg" alt="CI"/>&nbsp;
   <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"/>&nbsp;
   <img src="https://img.shields.io/badge/python-3.11%2B-blue" alt="Python 3.11+"/>&nbsp;
-  <img src="https://img.shields.io/badge/tests-103%20passing-brightgreen" alt="tests: 103 passing"/>
+  <img src="https://img.shields.io/badge/tests-118%20passing-brightgreen" alt="tests: 118 passing"/>
 </p>
 
 **Build legendary USB sticks.** IT Tech, Pentester, DFIR, Privacy — pick a persona, pick a size, get a battle-tested bootable stick.
@@ -153,7 +153,7 @@ phntm update                                         # catalog status
 | `phntm manifest new -p <persona> -t <tier> -o f.json` | create a build manifest |
 | `phntm manifest validate -f f.json` | sanity + fits-on-stick check |
 | `phntm build f.json --dry-run` | full plan, zero side effects |
-| `phntm build f.json -d auto -y` | real build — flashes Ventoy for real (smart upgrade), halts before the copy layer |
+| `phntm build f.json -d auto -y` | real build — flashes Ventoy, mounts the data partition, stages the full copy layer (ISOS/ TOOLS/ SETUP/ DROP/ VAULT/ PERSIST/ ventoy.json + phntm.json), reports exactly what landed |
 | `phntm status /media/USB` | what a PHNTM stick contains (or `phntm status /dev/sdX` — PHNTM finds its volume) |
 | `phntm check <manifest-or-stick>` | freshness diff vs catalog |
 | `phntm update` | catalog status |
@@ -165,12 +165,14 @@ phntm update                                         # catalog status
 
 ```
 VENTOY          bootloader  (any FAT/EXFAT/NTFS/x86 ISO boots)
- ISOS/          live ISOs + Windows installation media (Ventoy boots them)
- TOOLS/         portable tools incl. PHNTM script layer (router creds, disk info…)
- DROP/          plaintext scratch space you control
- VAULT/         encrypted volume (cryptsetup) — your secrets, your key
- PERSIST/       LUKS persistence volumes for per-OS state (e.g. Kali)
- phntm.json     machine-readable metadata: version, build date, component pins
+  ventoy/       ventoy.json — theme + persistence plugin pointing at PERSIST/
+  ISOS/         live ISOs + Windows installation media (Ventoy boots them)
+  TOOLS/        portable tools incl. PHNTM script layer (router creds, disk info…)
+  SETUP/        per-stick docs + helpers: phntm-about.txt, disk-info.sh, router-creds.sh, vault.txt
+  DROP/         plaintext scratch space you control
+  VAULT/        LUKS-encrypted container (cryptsetup) — your secrets, your key (see SETUP/vault.txt)
+  PERSIST/      LUKS persistence images for per-OS state (e.g. Kali)
+  phntm.json    machine-readable metadata: version, build date, component pins
 ```
 
 ## Status
@@ -182,7 +184,9 @@ VENTOY          bootloader  (any FAT/EXFAT/NTFS/x86 ISO boots)
 - **Fetch ✅** `phntm fetch` — real ISOs into an offline cache, resumable + sha256-verified
 - **Build driver ✅** `phntm build … --yes` flashes Ventoy for real (upgrades smartly when the stick already has it)
 - **Stick-aware status ✅** `phntm status /dev/sdX` — block devices work, non-sticks get a clean one-liner
-- **Review ✅** real screenshot gallery (PTY/TUI captures, `tools/screenshots.py` regenerates) — 103 tests
+- **Review ✅** real screenshot gallery (PTY/TUI captures, `tools/screenshots.py` regenerates) — 118 tests
+- **Copy layer ✅** `phntm build -d <stick> -y` now stages the whole stick: ISOS/ + TOOLS/ from cache, SETUP/ helpers, VAULT/ LUKS container, PERSIST/ image, ventoy.json — with an honest end-of-build report
+- **Coming next** — QEMU boot-test of the physical stick (`phntm test -d /dev/sdX`), stick-in-the-loop hardening
 
 follow for more
 
